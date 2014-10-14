@@ -1,0 +1,70 @@
+netcdf fs1981_001_ctd_ctd {
+dimensions:
+	time = 1 ;
+	latitude = 1 ;
+	longitude = 1 ;
+	pressure = 9 ;
+variables:
+	double time(time) ;
+		time:units = "UTC in julian days since 0000-0-0 00:00:00" ;
+		time:long_name = "time" ;
+		time:standard_name = "time" ;
+		time:fillvalue = "NaN" ;
+	double latitude(latitude) ;
+		latitude:units = "decimal degrees north" ;
+		latitude:long_name = "latitude" ;
+		latitude:standard_name = "latitude" ;
+		latitude:fillvalue = "NaN" ;
+	double longitude(longitude) ;
+		longitude:units = "decimal degrees east" ;
+		longitude:long_name = "longitude" ;
+		longitude:standard_name = "longitude" ;
+		longitude:fillvalue = "NaN" ;
+	double echodepth(latitude, longitude) ;
+		echodepth:units = "meters" ;
+		echodepth:fillvalue = "NaN" ;
+	double pressure(pressure) ;
+		pressure:units = "decibars" ;
+		pressure:long_name = "in-situ pressure" ;
+		pressure:standard_name = "pressure" ;
+		pressure:fillvalue = "NaN" ;
+	double temperature(pressure) ;
+		temperature:units = "celcius" ;
+		temperature:long_name = "in-situ temperature" ;
+		temperature:standard_name = "temperature" ;
+		temperature:fillvalue = "NaN" ;
+	double salinity(pressure) ;
+		salinity:units = "PSS-78" ;
+		salinity:long_name = "in-situ salinity" ;
+		salinity:standard_name = "salinity" ;
+		salinity:fillvalue = "NaN" ;
+
+// global attributes:
+		:time = 1981s, 10s, 11s, 15s, 21s, 0s ;
+		:station = 1s ;
+		:originalstation = 403s ;
+		:platform = "unknown" ;
+		:cruise = "fs1981" ;
+		:ctd = "unknown" ;
+		:INST_TYPE = "ctd" ;
+		:latitude = 78. ;
+		:longitude = 12.5 ;
+data:
+
+ time = 723830.639583333 ;
+
+ latitude = 78 ;
+
+ longitude = 12.5 ;
+
+ echodepth =
+  NaN ;
+
+ pressure = 0, 10.1108697498426, 20.222196395594, 30.3339799991452, 
+    50.5589183276893, 75.8426627300756, 101.12926524995, 151.71104852051, 
+    156.769856145474 ;
+
+ temperature = 1.22, 1.44, 2.96, 2.8, 2.68, 3.38, 3.41, NaN, 3.24 ;
+
+ salinity = 34.047, 34.106, 34.41, 34.448, NaN, 34.621, 34.816, NaN, 34.906 ;
+}
