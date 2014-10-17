@@ -2,15 +2,15 @@ require "nokogiri"
 
 module Oceanography
   class NcML
-  
+
     def initialize(xml)
       if File.exists? xml
         xml = File.read xml
       end
       @ngd = Nokogiri.XML(xml)
     end
-    
-    
+
+
     def attributes
       attributes = {}
       @ngd.xpath("/xmlns:netcdf/xmlns:attribute").map { |e|
@@ -27,16 +27,16 @@ module Oceanography
           raise "Unknown netCDF type: #{type}"
         end
         attributes[name] = value
-        
+
       }
       attributes
     end
-    
+
     def dimensions
       @ngd.xpath("/xmlns:netcdf/xmlns:dimension").map { |e|
         [e.attr("name"), e.attr("length"), e.attr("isUnlimited")]
       }.map {|name, length, unlimited|
-        
+
         unlimited = case unlimited
           when "true" then true
           else false
@@ -44,7 +44,7 @@ module Oceanography
         { "name" => name, "length" => length.to_i, "unlimited" => unlimited  }
       }
     end
-    
+
     def variables
       @ngd.xpath("/xmlns:netcdf/xmlns:variable").map { |e|
         [e.attr("name"), e.attr("shape")||"", e.attr("type")]
@@ -52,8 +52,8 @@ module Oceanography
         { "name" => name, "shape" => shape.split(" "), "type" => type  }
       }
     end
-    
-  
+
+
     #{
     #    "name"=>"prof_S",
     #    "type"=>"float",
@@ -79,8 +79,8 @@ module Oceanography
     #        -9999.0
     #    ]
     #}
-    
-    
-    
+
+
+
   end
 end

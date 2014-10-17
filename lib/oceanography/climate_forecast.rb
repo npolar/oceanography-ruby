@@ -1,8 +1,8 @@
 module Oceanography
-  
+
   class ClimateForecast
-    
-    # Climate and forecast conventions variable and attribute mappper for common synonyms 
+
+    # Climate and forecast conventions variable and attribute mappper for common synonyms
     def self.mapper
       lambda {|hash|
         mapped = {}
@@ -14,14 +14,14 @@ module Oceanography
               "sea_water_pressure"
             else k.downcase
           end
-          
+
           mapped[key]=v
-          
-          
+
+
         end
         mapped
       }
     end
-    
-  end  
+
+  end
 end
