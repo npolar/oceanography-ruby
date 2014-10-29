@@ -1,7 +1,7 @@
 require "spec_helper"
 
 require "oceanography/netcdf"
-require "oceanography/ncml"
+require_relative "../ncml"
 
 describe Oceanography::NetCDF do
 
@@ -30,29 +30,6 @@ describe Oceanography::NetCDF do
             "dimensions" => @ncml.dimensions,
             "variables" => @ncml.variables }
         end
-
-        #context "attributes" do
-        #  it do
-        #    #@netcdf.Mooring.should == 0
-        #  end
-        #end
-
-
-        # @todo plugable?
-        #context "sanity checks" do
-        #  context "time" do
-        #    # datatime(time).year should match file name for casts, for moorings +-2 years?
-        #  end
-        #
-        #  context "variable size" do
-        #     #expect(@netcdf.variable("time").size).to eq({})
-        #  end
-        #
-        #  it do
-        #    # expect(@netcdf.variables_metadata).to match(@expected["dimensions"])
-        #  end
-        #
-        #end
 
         describe "#dimensions" do
           subject(:dimensions) { @netcdf.dimensions }
@@ -132,27 +109,10 @@ describe Oceanography::NetCDF do
                 v.each_with_index do |string,i|
                   expect(string).to eq(expected_string_attributes[k][i])
                 end
-
               end
-
             end
           end
-
         end
-
-        #describe "#attribute" do
-        #  it do
-        #   #expect(@netcdf.variable("time").size).to eq({})
-        #  end
-        #end
-        ## test magical method send(:attribute_name.to_sym)
-        #
-        #
-        #describe "#variable" do
-        #  it do
-        #    #expect(@netcdf.variable("time").size).to eq({})
-        #  end
-        #end
 
         describe "#variables" do
           subject(:variables) { @netcdf.variables }
@@ -168,32 +128,18 @@ describe Oceanography::NetCDF do
 
 
             expect(variables.map {|v|v["dimensions"]}.first).to eq(@expected["variables"][0]["shape"])
-            #@netcdf.variable("x") == @netcdf.send(:x)
           }
-
-
-
-
         end
 
 
         describe "#datetime" do
-          #subject(:datetime) {  }
 
-          it "Array of DateTime (or Exception if no time dimension)" do
+          it "Array of DateTime" do
             if @netcdf.dimensions.map {|d| d["name"] }.include? "time"
-              expect(@netcdf.datetime.map {|dt| dt.class}.uniq).to eq([DateTime])
-            else
-              #expect(@netcdf.datetime).to raise_error(RuntimeError)
+              expect(@netcdf.variable("time").map {|dt| dt.class}.uniq).to eq([DateTime])
             end
-
           end
-
         end
-
-
-
-
       end # End _data context
     } # End _data loop
 
