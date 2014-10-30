@@ -1,7 +1,7 @@
 require "oceanography/mapping/value_mapper"
 
 describe Oceanography::ValueMapper do
-  describe "#to_proc" do
+  describe "#map" do
     subject(:value_mapper) { Oceanography::ValueMapper }
 
     it "should unwrap arrays of size 1" do
