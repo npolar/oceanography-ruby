@@ -1,13 +1,9 @@
 module Oceanography
-  class NcHashPostProcessor
+  class MissingValuesProcessor
 
     # Takes a nchash (typically generated with netcdf.rb) and apply
-    # post processing removing unwanted attributes and values
+    # post processing removing 'missing_values'
     def self.process(nc_hash)
-      self.handle_missing_value(nc_hash)
-    end
-
-    def self.handle_missing_value(nc_hash)
       missing_value = nc_hash["attributes"]["missing_value"]
       attributes = nc_hash["attributes"].reject {|key| key == "missing_value"}
       if missing_value
