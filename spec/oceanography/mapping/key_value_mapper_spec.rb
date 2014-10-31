@@ -47,5 +47,9 @@ describe Oceanography::KeyValueMapper do
     it "should convert NaN to nil" do
       expect(mapper.map({"array" => Float::NAN})["array"]).to eq(nil)
     end
+
+    it "should round floating points to a accurracy of 5" do
+      expect(mapper.map({"v" => 23.123345546675})["v"]).to eq(23.12335)
+    end
   end
 end

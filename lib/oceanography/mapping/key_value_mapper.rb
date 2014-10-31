@@ -29,6 +29,8 @@ module Oceanography
         nil
       elsif value.kind_of?(Array) && value.size == 1
         self.value_mapper(key, value.flatten.first)
+      elsif value.respond_to?(:round)
+        value.round(5)
       else
         value
       end
