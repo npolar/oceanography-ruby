@@ -5,15 +5,22 @@ module Oceanography
     # Accepts flat Hash of key-value pairs
     def self.map(doc)
       doc.each_with_object({}) do |(k,v), hash|
-        key = case k
-          when /^(?<prefix>.*)(?:depth?)$/ui
-            ($~[:prefix].empty? ? "" : $~[:prefix] + "_") + "depth"
-          when /^originalstation$/ui
-            "original_station"
-          else k.downcase
-        end
-
+        key = correct_key(k)
         hash[key] = self.value_mapper(k,v)
+      end
+    end
+
+    def self.correct_key(k)
+      case k
+        when /^(?<prefix>.*)(?:depth?)$/ui
+          ($~[:prefix].empty? ? "" : $~[:prefix] + "_") + "depth"
+        when /^originalstation$/ui
+          "original_station"
+        when /^(inst_)?type$/ui
+          "instrument_type"
+        when /^serialnumber$/ui
+          "serial_number"
+        else k.downcase
       end
     end
 

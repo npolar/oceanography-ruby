@@ -24,6 +24,18 @@ describe Oceanography::KeyValueMapper do
       expect(mapper.map({"originalstation" => nil})).to have_key("original_station")
     end
 
+    it "should correct spelling of 'inst_type' to 'instrument_type'" do
+      expect(mapper.map({"inst_type" => nil})).to have_key("instrument_type")
+    end
+
+    it "should correct spelling of 'type' to 'instrument_type'" do
+      expect(mapper.map({"type" => nil})).to have_key("instrument_type")
+    end
+
+    it "should correct spelling of 'serialnumber' to 'serial_number'" do
+      expect(mapper.map({"serialnumber" => nil})).to have_key("serial_number")
+    end
+
     it "should unwrap arrays of size 1" do
       expect(mapper.map({"array" => [1]})["array"]).to eq(1)
     end
