@@ -32,6 +32,7 @@ module Oceanography
           # Attributes
           attributes.each do |key, value|
             if !self.netcdf_specific?(key)
+              doc_key = key
               doc_key = "measured" if key == "time"
               doc[doc_key] = value
             end

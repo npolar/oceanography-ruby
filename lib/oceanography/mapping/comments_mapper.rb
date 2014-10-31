@@ -9,6 +9,8 @@ module Oceanography
         if key =~ COMMENT_REGEX
           hash["comments"] ||= []
           hash["comments"].push(value)
+        else
+          hash[key] = value
         end
       end
     end

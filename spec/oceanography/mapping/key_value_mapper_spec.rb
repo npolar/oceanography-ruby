@@ -20,16 +20,12 @@ describe Oceanography::KeyValueMapper do
       expect(mapper.map({"depth" => nil})).to have_key("depth")
     end
 
-    it "should correct spelling of 'originalstation' to 'original_station'" do
-      expect(mapper.map({"originalstation" => nil})).to have_key("original_station")
+    it "should correct spelling of 'originalstation' to 'station'" do
+      expect(mapper.map({"originalstation" => nil})).to have_key("station")
     end
 
-    it "should correct spelling of 'inst_type' to 'instrument_type'" do
-      expect(mapper.map({"inst_type" => nil})).to have_key("instrument_type")
-    end
-
-    it "should correct spelling of 'type' to 'instrument_type'" do
-      expect(mapper.map({"type" => nil})).to have_key("instrument_type")
+    it "should correct spelling of 'instrument_type' to 'type'" do
+      expect(mapper.map({"instrument_type" => nil})).to have_key("type")
     end
 
     it "should correct spelling of 'serialnumber' to 'serial_number'" do
@@ -50,6 +46,10 @@ describe Oceanography::KeyValueMapper do
 
     it "should round floating points to a accurracy of 5" do
       expect(mapper.map({"v" => 23.123345546675})["v"]).to eq(23.12335)
+    end
+
+    it "should kkep ints as ints" do
+      expect(mapper.map({"v" => 1})["v"]).to eq(1)
     end
 
     it "should convert 'measured', 'start_date' and 'stop_date' date array to iso8601 string" do

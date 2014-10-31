@@ -1,9 +1,9 @@
 require "logger"
 require "oceanography/netcdf"
-require "oceanography/mapping/climate_forecast_mapper"
-require "oceanography/mapping/key_value_mapper"
-require "oceanography/validation/sanity_validator"
-require "oceanography/validation/schema_validator"
+require "oceanography/doc_splitter"
+require "require_all"
+require_rel "mapping"
+require_rel "validation"
 
 module Oceanography
 
@@ -23,6 +23,15 @@ module Oceanography
     end
 
     def process(nc_hash)
+      docs = DocSplitter.to_docs(nc_hash).map do |doc|
+        processed_doc = doc
+        [MissingValuesMapper, KeyValueMapper, CommentsMapper,
+          CollectionMapper, ClimateForecastMapper].each do |mapper|
+          processed_doc = mapper.map(processed_doc)
+        end
+        processed_doc
+      end
+      docs.to_json
     end
   end
 end

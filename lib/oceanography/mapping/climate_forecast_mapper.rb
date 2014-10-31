@@ -1,6 +1,6 @@
 module Oceanography
 
-  class ClimateForecast
+  class ClimateForecastMapper
 
     # Climate and forecast conventions variable and attribute mappper for common synonyms
     # @see http://cfconventions.org/Data/cf-standard-names/27/build/cf-standard-name-table.html

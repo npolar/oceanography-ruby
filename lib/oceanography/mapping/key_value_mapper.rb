@@ -16,8 +16,8 @@ module Oceanography
           ($~[:prefix].empty? ? "" : $~[:prefix] + "_") + "depth"
         when /^original_?station$/ui
           "station"
-        when /^(inst_)?type$/ui
-          "instrument_type"
+        when /^instrument_type$/ui
+          "type"
         when /^serialnumber$/ui
           "serial_number"
         else k.downcase
@@ -29,14 +29,14 @@ module Oceanography
         nil
       elsif value.kind_of?(Array) && value.size == 1
         self.value_mapper(key, value.flatten.first)
-      elsif value.respond_to?(:round)
+      elsif value.kind_of?(Float)
         value.round(5)
+      elsif value.respond_to?(:iso8601)
+          value.iso8601[0..-7]+"Z"
       elsif ['measured', 'start_date', 'stop_date'].include?(key)
         y,m,d,h,min,s = *value.fill(0, value.size, 6-value.size)
         y = y == 91 ? 1991 : y
         self.value_mapper(key, DateTime.new(y,m,d,h,min,s))
-      elsif value.respond_to?(:iso8601)
-        value.iso8601[0..-7]+"Z"
       else
         value
       end
