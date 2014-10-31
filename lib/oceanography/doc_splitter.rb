@@ -29,6 +29,8 @@ module Oceanography
           # Attributes
           doc.merge!(attributes)
 
+          doc["source"] = nc_hash["metadata"]["filename"]
+
           docs.push(doc)
         end
 

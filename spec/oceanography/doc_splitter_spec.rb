@@ -36,5 +36,11 @@ describe "Oceanography::DocSplitter.to_docs" do
         expect(doc.keys).to include(*dump_data["attributes"].keys)
       end
     end
+
+    it "should add originating file to docs" do
+      subject.each do |doc|
+        expect(doc["source"]).not_to be_nil
+      end
+    end
   end
 end
