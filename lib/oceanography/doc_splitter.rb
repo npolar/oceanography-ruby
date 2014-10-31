@@ -27,7 +27,12 @@ module Oceanography
           end
 
           # Attributes
-          doc.merge!(attributes)
+          attributes.each do |key, value|
+            if !self.netcdf_specific?(key)
+              doc_key = "measured" if key == "time"
+              doc[doc_key] = value
+            end
+          end
 
           doc["source"] = nc_hash["metadata"]["filename"]
 
@@ -35,6 +40,11 @@ module Oceanography
         end
 
         docs
+    end
+
+    def self.netcdf_specific?(key)
+      ['sync', 'INST_TYPE', 'createDimension',
+        'createVariable', 'close', 'flush'].include?(key)
     end
   end
 end

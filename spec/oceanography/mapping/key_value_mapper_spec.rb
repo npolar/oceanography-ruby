@@ -51,5 +51,13 @@ describe Oceanography::KeyValueMapper do
     it "should round floating points to a accurracy of 5" do
       expect(mapper.map({"v" => 23.123345546675})["v"]).to eq(23.12335)
     end
+
+    it "should convert 'measured', 'start_date' and 'stop_date' date array to iso8601 string" do
+      expect(mapper.map({"measured" => [1981,10,11,15,21,0]})["measured"]).to eq("1981-10-11T15:21:00Z")
+    end
+
+    it "should convert DateTime to iso8601 string" do
+      expect(mapper.map({"time" => DateTime.new(1981,10,11,15,21,0)})["time"]).to eq("1981-10-11T15:21:00Z")
+    end
   end
 end

@@ -42,5 +42,18 @@ describe "Oceanography::DocSplitter.to_docs" do
         expect(doc["source"]).not_to be_nil
       end
     end
+
+    it "should remove netCDF specific attributes" do
+      subject.each do |doc|
+        expect(doc.keys).not_to include('sync', 'INST_TYPE', 'createDimension',
+          'createVariable', 'close', 'flush')
+      end
+    end
+
+    it "should name 'time' attribute 'measured'" do
+      subject.each do |doc|
+        expect(doc["measured"]).to eq(dump_data["attributes"]["time"])
+      end
+    end
   end
 end

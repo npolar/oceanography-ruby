@@ -202,8 +202,8 @@ module Oceanography
         raise ArgumentError, "Not NetCDFVar or NetCDFAtt"
       end
 
-      if (var.kind_of?(NetCDFVar) && var.name == "time")
-        type = :time
+      if var.kind_of?(NetCDFVar) && var.name == "time"
+        type = :timevar
       end
 
       #var.get : String or an NArray object (NOTE: even a scalar is returned as an NArray of length 1)
@@ -211,7 +211,7 @@ module Oceanography
         when STRING_TYPE_REGEX  then var.get
         when INTEGER_TYPE_REGEX then var.get.to_a.map {|i| i.to_i }
         when FLOAT_TYPE_REGEX then var.get.to_a.map {|f| f.to_f }
-        when :time then datetime(var)
+        when :timevar then float_time_to_datetime(var)
         else var.get.to_a
       end
 
@@ -220,7 +220,7 @@ module Oceanography
 
     # Map time array (of numbers relative to a starting point) to array of absolute DateTime objects
     # @return [Array<DateTime>] Array of DateTime
-    def datetime(timevar)
+    def float_time_to_datetime(timevar)
       # Problem 0: Identifying the time variable(s), "time" is used as default
       #
       # Problem 1: Variability in the name of the time "units" attribute name

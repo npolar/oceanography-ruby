@@ -14,8 +14,8 @@ module Oceanography
       case k
         when /^(?<prefix>.*)(?:depth?)$/ui
           ($~[:prefix].empty? ? "" : $~[:prefix] + "_") + "depth"
-        when /^originalstation$/ui
-          "original_station"
+        when /^original_?station$/ui
+          "station"
         when /^(inst_)?type$/ui
           "instrument_type"
         when /^serialnumber$/ui
@@ -31,6 +31,12 @@ module Oceanography
         self.value_mapper(key, value.flatten.first)
       elsif value.respond_to?(:round)
         value.round(5)
+      elsif ['measured', 'start_date', 'stop_date'].include?(key)
+        y,m,d,h,min,s = *value.fill(0, value.size, 6-value.size)
+        y = y == 91 ? 1991 : y
+        self.value_mapper(key, DateTime.new(y,m,d,h,min,s))
+      elsif value.respond_to?(:iso8601)
+        value.iso8601[0..-7]+"Z"
       else
         value
       end
