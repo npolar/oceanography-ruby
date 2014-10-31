@@ -7,6 +7,7 @@ gem "libxml-ruby"
 gem "yajl-ruby"
 gem "nokogiri"
 gem "hashie"
+gem "uuidtools"
 
 group :development, :test do
   gem "rspec"

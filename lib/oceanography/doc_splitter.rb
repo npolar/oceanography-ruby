@@ -1,3 +1,6 @@
+require "uuidtools"
+require "json"
+
 module Oceanography
   class DocSplitter
 
@@ -35,6 +38,9 @@ module Oceanography
           end
 
           doc["source"] = nc_hash["metadata"]["filename"]
+
+          # Generate a namespaced uuid based on the json string and use that as the ID
+          doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
 
           docs.push(doc)
         end

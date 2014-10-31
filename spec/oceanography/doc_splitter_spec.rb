@@ -1,5 +1,7 @@
 require "spec_helper"
 require "oceanography/doc_splitter"
+require "uuidtools"
+
 dump_data = eval File.read("spec/oceanography/_data/dump.rb")
 
 describe "Oceanography::DocSplitter.to_docs" do
@@ -53,6 +55,12 @@ describe "Oceanography::DocSplitter.to_docs" do
     it "should name 'time' attribute 'measured'" do
       subject.each do |doc|
         expect(doc["measured"]).to eq(dump_data["attributes"]["time"])
+      end
+    end
+
+    it "should add UUID id" do
+      subject.each do |doc|
+        expect(UUIDTools::UUID.parse(doc["id"]).valid?).to be
       end
     end
   end
