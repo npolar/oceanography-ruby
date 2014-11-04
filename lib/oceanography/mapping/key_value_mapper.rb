@@ -18,7 +18,7 @@ module Oceanography
           "station"
         when /^instrument_type$/ui
           "type"
-        when /^serialnumber$/ui
+        when /^serialnumber|serie$/ui
           "serial_number"
         else k.downcase
       end
