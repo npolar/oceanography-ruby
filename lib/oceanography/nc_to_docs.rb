@@ -23,20 +23,6 @@ module Oceanography
       @sanity_validator = Oceanography::SanityValidator.new()
     end
 
-    def self.parse(argv=ARGV)
-      if argv.size < 1
-        STDERR.write("Usage: ./ncdocs.sh in_path [out_path]\n")
-        exit(-1)
-      end
-      config = {
-        base_path: argv[0],
-        out_path: argv[1],
-        log_level: argv[2]
-      }
-      nc_to_docs = Oceanography::NcToDocs.new(config)
-      nc_to_docs.parse_files()
-    end
-
     def parse_files()
       @log.info("Parsing nc files in #{@config.base_path} to #{@config.out_path}")
       Dir["#{@config.base_path}/**/*.nc"].each do |file|
