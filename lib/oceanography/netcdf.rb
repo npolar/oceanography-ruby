@@ -47,7 +47,7 @@ module Oceanography
         n = Oceanography::NetCDF.new
         n.log = Logger.new(STDERR)
         n.open(argv[0])
-        m = argv[1] ||= "dump"
+        m = argv[1] ||= "hash"
         puts JSON.pretty_generate(n.send(m.to_sym))
       rescue => e
         STDERR.write(e.message+"\n")
@@ -110,7 +110,7 @@ module Oceanography
     end
 
     # Dump complete hash of nc contents
-    def dump()
+    def hash()
       {
           "attributes" => attributes,
           "variables" => variables,
@@ -210,7 +210,7 @@ module Oceanography
       v = case type
         when STRING_TYPE_REGEX  then var.get
         when INTEGER_TYPE_REGEX then var.get.to_a.map {|i| i.to_i }
-        when FLOAT_TYPE_REGEX then var.get.to_a.map {|f| f.to_f }
+        when FLOAT_TYPE_REGEX then var.get.to_a.map {|f| f.respond_to?(:to_f) ? f.to_f : f[0].to_f }
         when :timevar then float_time_to_datetime(var)
         else var.get.to_a
       end

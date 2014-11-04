@@ -8,6 +8,7 @@ gem "yajl-ruby"
 gem "nokogiri"
 gem "hashie"
 gem "uuidtools"
+gem "require_all"
 
 group :development, :test do
   gem "rspec"

@@ -35,7 +35,8 @@ describe "Oceanography::DocSplitter.to_docs" do
 
     it "should have global attributes" do
       subject.each do |doc|
-        expect(doc.keys).to include(*dump_data["attributes"].keys)
+        expect(doc.keys).to include(*dump_data["attributes"].keys.reject { |key|
+           Oceanography::DocSplitter.netcdf_specific?(key) || key == "time" })
       end
     end
 
