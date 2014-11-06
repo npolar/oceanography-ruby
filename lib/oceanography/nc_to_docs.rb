@@ -1,4 +1,5 @@
 require "logger"
+require "hashie/mash"
 require_relative "./netcdf"
 require_relative "./doc_splitter"
 require "require_all"
@@ -17,22 +18,24 @@ module Oceanography
       }.merge(config) {|k, default, new| new || default })
 
       @log = Logger.new(STDERR)
-      @log.level = @config.log_level
-      @netcdf_reader = Oceanography::NetCDF.new({log: @log})
-      @schema_validator = Oceanography::SchemaValidator.new()
+      @log.level = config.log_level
+      @netcdf_reader = Oceanography::NetCDF.new({log: log})
+      @schema_validator = Oceanography::SchemaValidator.new({log: log, schema: config.schema})
       @sanity_validator = Oceanography::SanityValidator.new()
     end
 
     def parse_files()
-      @log.info("Parsing nc files in #{@config.base_path} to #{@config.out_path}")
-      Dir["#{@config.base_path}/**/*.nc"].each do |file|
-        @log.info("Processing #{file}")
+      log.info("Parsing nc files in #{config.base_path} to #{config.out_path}")
+      Dir["#{config.base_path}/**/*.nc"].each do |file|
+        log.info("Processing #{file}")
         t1 = Time.now
         raw_hash = get(file)
-        json_path = File.join(@config.out_path, file[/(.+#{File::SEPARATOR}).+.nc$/ui, 1])
+        json_path = File.join(config.out_path, file[/(.+#{File::SEPARATOR}).+.nc$/ui, 1])
         docs = process(raw_hash)
-        docs.each {|doc| writeToFile(doc, json_path)}
-        @log.info("Wrote #{docs.size()} docs to #{json_path} in #{Time.now - t1}ms")
+        valid_docs = docs.select { |doc| schema_validator.valid?(doc) }
+        log.info("#{docs.size-valid_docs.size} of #{docs.size} docs rejected.")
+        valid_docs.each {|doc| writeToFile(doc, json_path)}
+        log.info("Wrote #{valid_docs.size} docs to #{json_path} in #{Time.now - t1}ms")
       end
     end
 
@@ -56,7 +59,7 @@ module Oceanography
       require "fileutils"
 
       file = File.join(path, doc["id"]+".json")
-      @log.debug("Writing #{file}")
+      log.debug("Writing #{file}")
       unless File.directory?(path)
         FileUtils.mkdir_p(path)
       end

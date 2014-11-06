@@ -16,6 +16,7 @@ module Oceanography
       end
     end
 
+    # Recursive removal of "missing_value"
     def self.remove_missing_values(missing_value, value)
       if value == missing_value
         nil

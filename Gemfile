@@ -9,6 +9,7 @@ gem "nokogiri"
 gem "hashie"
 gem "uuidtools"
 gem "require_all"
+gem "json-schema"
 
 group :development, :test do
   gem "rspec"

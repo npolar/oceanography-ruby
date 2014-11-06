@@ -24,6 +24,7 @@ module Oceanography
       end
     end
 
+    # Recursive value mapping
     def self.value_mapper(key, value)
       if value.respond_to?(:nan?) && value.nan?
         nil
@@ -31,8 +32,8 @@ module Oceanography
         self.value_mapper(key, value.flatten.first)
       elsif value.kind_of?(Float)
         value.round(5)
-      elsif value.respond_to?(:iso8601)
-          value.iso8601[0..-7]+"Z"
+      elsif value.kind_of?(DateTime)
+          value.to_time.utc.iso8601
       elsif ['measured', 'start_date', 'stop_date'].include?(key)
         y,m,d,h,min,s = *value.fill(0, value.size, 6-value.size)
         y = y == 91 ? 1991 : y

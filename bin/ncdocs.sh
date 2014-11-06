@@ -10,6 +10,7 @@ begin
     opts.banner = banner
 
     opts.on('-o', '--outpath PATH', 'Path to write json docs to. Default ~/json') { |v| options[:out_path] = v }
+    opts.on('-s', '--schema PATH', 'Path to json schema to validate docs against') { |v| options[:schema] = v }
     opts.on('-v', '--verbose', 'Log level debug. Default info') { |v| options[:log_level] = Logger::DEBUG }
     opts.on('-h', '--help', 'Display this screen') do
       puts opts
