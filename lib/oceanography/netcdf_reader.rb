@@ -11,7 +11,7 @@ module Oceanography
 
   # Oceanography::NetCDF is a simple wrapper for NumRu::NetCDF, built to convert
   # oceanography data to and from JSON
-  class NetCDF
+  class NetCDFReader
 
     # Regexes for CDL data types
     # http://www.unidata.ucar.edu/software/netcdf/docs/cdl_data_types.html

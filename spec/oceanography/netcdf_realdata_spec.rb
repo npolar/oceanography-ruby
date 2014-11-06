@@ -1,9 +1,9 @@
 require "spec_helper"
 
-require "oceanography/netcdf"
+require "oceanography/netcdf_reader"
 require_relative "../ncml"
 
-describe Oceanography::NetCDF do
+describe Oceanography::NetCDFReader do
 
   EPSILON = 1.0e-13 # Required precision for floats
 
@@ -17,7 +17,7 @@ describe Oceanography::NetCDF do
           nc_filename = f.gsub(/cdl/, "nc")
           `ncgen -o #{nc_filename} #{f}`
 
-          @netcdf = Oceanography::NetCDF.new
+          @netcdf = Oceanography::NetCDFReader.new
           @netcdf.open(nc_filename)
 
           ncdump_xml_filename = f.gsub(/cdl/, "xml")

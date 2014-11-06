@@ -1,6 +1,6 @@
 module Oceanography
 
-  class KeyValueMapper
+  class KeyValueCorrectionsMapper
 
     # Accepts flat Hash of key-value pairs
     def self.map(doc)
