@@ -12,13 +12,10 @@ module Oceanography
 
     def self.correct_key(k)
       case k
-        when /^(?<prefix>.*)(?:depth?)$/ui
-          ($~[:prefix].empty? ? "" : $~[:prefix] + "_") + "depth"
-        when /^original_?station$/ui
-          "station"
-        when /^instrument_type$/ui
-          "type"
-        when /^serialnumber|serie$/ui
+
+      when /^(instrument_type|inst_type|type)$/ui
+          "instrument_type"
+        when /^serial_?number|serie$/ui
           "serial_number"
         else k.downcase
       end
@@ -26,7 +23,7 @@ module Oceanography
 
     # Recursive value mapping
     def self.value_mapper(key, value)
-      if value.respond_to?(:nan?) && value.nan?
+      if (value.respond_to?(:nan?) && value.nan?) || value == "unknown"
         nil
       elsif value.kind_of?(Array) && value.size == 1
         self.value_mapper(key, value.flatten.first)

@@ -1,6 +1,6 @@
 module Oceanography
 
-  class ClimateForecastMapper
+  class ODSClimateForecastMapper
 
     # Climate and forecast conventions variable and attribute mappper for common synonyms
     # @see http://cfconventions.org/Data/cf-standard-names/27/build/cf-standard-name-table.html
@@ -14,14 +14,18 @@ module Oceanography
             "sea_water_pressure"
           when /^(salinity|s)$/ui
             "sea_water_salinity"
-          when /^(dire)$/ui
+          when /^dire$/ui
             "direction_of_sea_water_velocity"
-          when /^(uvel)$/ui
+          when /^uvel$/ui
             "eastward_sea_water_velocity"
-          when /^(vvel)$/ui
+          when /^vvel$/ui
             "northward_sea_water_velocity"
-          when /^(conductivity)$/ui
+          when /^conductivity$/ui
             "sea_water_electrical_conductivity"
+          when /^(water_depth|echo_depth)$/ui
+            "sea_floor_depth_below_sea_surface"
+          when /^(dept|instrdepth)$/ui
+            "depth"
           else k.downcase
         end
         mapped[key]=v

@@ -15,6 +15,14 @@ module Oceanography
         nr_of_points.times do |i|
           doc = {}
 
+          # Attributes
+          attributes.each do |key, value|
+            doc_key = key
+            # Avoid collition with time variable
+            doc_key = "measured" if key =~ /^(time|date)$/ui
+            doc[doc_key] = value
+          end
+
           # Variable data
           data.each do |key, value|
             doc_value = value
@@ -26,16 +34,13 @@ module Oceanography
                 doc_value = doc_value[i]
               end
             end
-            doc[key] = doc_value
-          end
 
-          # Attributes
-          attributes.each do |key, value|
-            if !self.netcdf_specific?(key)
-              doc_key = key
-              doc_key = "measured" if key == "time"
-              doc[doc_key] = value
+            # Use time varibale as "measured" if unknown
+            if (self.measured_time_unknown?(key, value, doc))
+              key = "measured"
             end
+
+            doc[key] = doc_value
           end
 
           doc["source"] = nc_hash["metadata"]["filename"]
@@ -49,9 +54,11 @@ module Oceanography
         docs
     end
 
-    def self.netcdf_specific?(key)
-      ['sync', 'INST_TYPE', 'createDimension',
-        'createVariable', 'close', 'flush'].include?(key)
+    private
+    def self.measured_time_unknown?(key, value, doc)
+      key == "time" &&
+      !value.kind_of?(Array) &&
+      doc["measured"] == "unknown"
     end
   end
 end

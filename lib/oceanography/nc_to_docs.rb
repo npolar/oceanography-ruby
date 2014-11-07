@@ -20,7 +20,8 @@ module Oceanography
       @config = Hashie::Mash.new({
         log_level: Logger::INFO,
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
-          CollectionMapper, ClimateForecastMapper]
+                  ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
+                  ODSClimateForecastMapper]
       }.merge(config) {|k, default, new| new || default })
 
       @log = Logger.new(STDERR)
@@ -36,6 +37,7 @@ module Oceanography
     def parse_files()
       log.info(log_helper.start_scan())
       Dir["#{config.base_path}/**/*.nc"].each do |file|
+        next if bad_data?(file)
         log.info(log_helper.start_parse(file))
         raw_hash = netcdf_reader.open(file).hash()
         docs = process(raw_hash)
@@ -65,6 +67,10 @@ module Oceanography
         processed_doc
       end
       docs
+    end
+
+    def bad_data?(file)
+      /#{File::SEPARATOR}OLD#{File::SEPARATOR}/ui
     end
   end
 end

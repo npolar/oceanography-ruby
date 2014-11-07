@@ -1,6 +1,6 @@
 module Oceanography
 
-  class CollectionMapper
+  class ODSCollectionMapper
 
     # Accepts flat Hash of key-value pairs adding collection property
     def self.map(doc)

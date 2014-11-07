@@ -1,8 +1,8 @@
-require "oceanography/mapping/collection_mapper"
+require "oceanography/mapping/ods_collection_mapper"
 
-describe Oceanography::CollectionMapper do
+describe Oceanography::ODSCollectionMapper do
   describe "#map" do
-    subject(:mapper) { Oceanography::CollectionMapper }
+    subject(:mapper) { Oceanography::ODSCollectionMapper }
 
     it "should add collection => 'mooring' for docs with property 'mooring'" do
       expect(mapper.map({"mooring" => nil})["collection"]).to eq("mooring")

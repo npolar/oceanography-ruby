@@ -244,6 +244,7 @@ module Oceanography
       year = year_scan[0].to_i
 
       timevar.get.to_a.map do |t|
+        return nil if t.nan?
         if t < 0
           # Negative time since, so we subtract (using +) t from start point to get the number of days elapsed
           t = DateTime.civil(year).jd + t
