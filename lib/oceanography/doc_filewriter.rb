@@ -1,10 +1,11 @@
 module Oceanography
   class DocFileWriter
 
-    attr_reader :log
+    attr_reader :log, :out_path
 
     def initialize(config)
       @log = config[:log]
+      @out_path = config[:out_path]
     end
 
     def write(docs, original_file)
@@ -24,7 +25,7 @@ module Oceanography
     end
 
     def get_file_path(file)
-      File.join(config.out_path, file[/(.+#{File::SEPARATOR}).+.nc$/ui, 1])
+      File.join(out_path, file[/(.+#{File::SEPARATOR}).+.nc$/ui, 1])
     end
   end
 end

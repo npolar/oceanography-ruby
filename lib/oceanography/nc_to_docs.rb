@@ -12,10 +12,12 @@ require_rel "validation"
 
 module Oceanography
 
-  attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
-              :schema_validator, :sanity_validator, :docs_db_publisher
-
   class NcToDocs
+
+    attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
+                :schema_validator, :sanity_validator, :docs_db_publisher
+
+
     def initialize(config = {})
       @config = Hashie::Mash.new({
         log_level: Logger::INFO,
@@ -30,13 +32,14 @@ module Oceanography
       @netcdf_reader = NetCDFReader.new({log: @log})
       @schema_validator = SchemaValidator.new({log: @log, schema: @config.schema})
       @sanity_validator = SanityValidator.new()
-      @doc_file_writer = DocFileWriter.new({log: @log})
+      @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
     end
 
     def parse_files()
       log.info(log_helper.start_scan())
-      Dir["#{config.base_path}/**/*.nc"].each do |file|
+      files = Dir["#{config.base_path}/**/*.nc"]
+      files.each do |file|
         next if bad_data?(file)
         log.info(log_helper.start_parse(file))
         raw_hash = netcdf_reader.open(file).hash()
@@ -47,15 +50,16 @@ module Oceanography
         all_docs_valid = (valid_docs.size == docs.size)
 
         if config.out_path?
-          DocFileWriter.write(valid_docs, file)
+          doc_file_writer.write(valid_docs, file)
         end
 
         if config.api_url? && all_docs_valid
-          DocsDBPublisher.post(valid_docs, file)
+          docs_db_publisher.post(valid_docs, file)
         end
 
-        log.info(log_helper.stop_parse())
+        log.info(log_helper.stop_parse(file))
       end
+      log.info(log_helper.stop_scan(files))
     end
 
     def process(nc_hash)
@@ -70,7 +74,7 @@ module Oceanography
     end
 
     def bad_data?(file)
-      /#{File::SEPARATOR}OLD#{File::SEPARATOR}/ui
+      file =~ /#{File::SEPARATOR}OLD#{File::SEPARATOR}/ui
     end
   end
 end

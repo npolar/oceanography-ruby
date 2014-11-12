@@ -15,12 +15,16 @@ module Oceanography
       message
     end
 
+    def stop_scan(files)
+      "Parsing of #{files.size || 0} files done."
+    end
+
     def start_parse(file)
       timing[file] = Time.now
       "Processing #{file}"
     end
 
-    def stop_parse(file, valid_docs)
+    def stop_parse(file)
       time = Time.now - timing[file]
       "Processing #{file} took #{time}ms"
     end
