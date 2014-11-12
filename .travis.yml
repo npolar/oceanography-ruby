@@ -7,7 +7,10 @@ branches:
     - master
 env:
   - CODECLIMATE_REPO_TOKEN=d0a22b82cb64405347451be2475f0bf80df48c5b3246aed3fdce92b9e89786c4 bundle exec rake
+before_install:
+  - sudo apt-get install libnetcdf-dev
 install:
   - bundle install
+
 script:
   - bundle exec rspec
