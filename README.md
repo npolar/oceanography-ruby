@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/npolar/oceanography-ruby/badges/gpa.svg)](https://codeclimate.com/github/npolar/oceanography-ruby)
+
 # oceanography-ruby
 
 ## Features
