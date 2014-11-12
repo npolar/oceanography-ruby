@@ -20,5 +20,5 @@
     -h, --help                       Display this screen
 
 ## Contribute
-Clone, bundle install, rspec
+Clone, bundle install, rspec 
 Please use feature branches.
