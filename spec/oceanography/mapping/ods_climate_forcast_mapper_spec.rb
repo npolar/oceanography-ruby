@@ -52,5 +52,21 @@ describe Oceanography::ODSClimateForecastMapper do
       expect(cf_mapper.map({"conductivity" => 0})).to have_key("sea_water_electrical_conductivity")
     end
 
+    it "should use 'sea_floor_depth_below_sea_surface' for 'water_depth'" do
+      expect(cf_mapper.map({"water_depth" => nil})).to have_key("sea_floor_depth_below_sea_surface")
+    end
+
+    it "should use 'sea_floor_depth_below_sea_surface' for 'echo_depth'" do
+      expect(cf_mapper.map({"echo_depth" => nil})).to have_key("sea_floor_depth_below_sea_surface")
+    end
+
+    it "should use 'depth' for 'dept'" do
+      expect(cf_mapper.map({"dept" => nil})).to have_key("depth")
+    end
+
+    it "should use 'depth' for 'instrdepth'" do
+      expect(cf_mapper.map({"instrdepth" => nil})).to have_key("depth")
+    end
+
   end
 end

@@ -35,21 +35,13 @@ describe "Oceanography::DocSplitter.to_docs" do
 
     it "should have global attributes" do
       subject.each do |doc|
-        expect(doc.keys).to include(*dump_data["attributes"].keys.reject { |key|
-           Oceanography::DocSplitter.netcdf_specific?(key) || key == "time" })
+        expect(doc.keys).to include(*dump_data["attributes"].keys.reject {|k| k == "time"})
       end
     end
 
     it "should add originating file to docs" do
       subject.each do |doc|
         expect(doc["source"]).not_to be_nil
-      end
-    end
-
-    it "should remove netCDF specific attributes" do
-      subject.each do |doc|
-        expect(doc.keys).not_to include('sync', 'INST_TYPE', 'createDimension',
-          'createVariable', 'close', 'flush')
       end
     end
 

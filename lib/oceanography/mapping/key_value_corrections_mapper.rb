@@ -13,10 +13,12 @@ module Oceanography
     def self.correct_key(k)
       case k
 
-      when /^(instrument_type|inst_type|type)$/ui
+        when /^(instrument_type|inst_type|type)$/ui
           "instrument_type"
         when /^serial_?number|serie$/ui
           "serial_number"
+        when /^originalstation$/ui
+          "original_station"
         else k.downcase
       end
     end
