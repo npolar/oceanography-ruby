@@ -11,7 +11,10 @@
 * Write documents to file or POST to document database
 
 ## Usage
-    Usage: ./ncdocs.sh [options] PATH [DOCDB_URL] 
+You need netcdf c lib installed.
+`sudo apt-get install libnetcdf-dev`
+
+    Usage: ./ncdocs.sh [options] PATH [DOCDB_URL]
     If DOCDB_URL is given json documents will be PUT to that URL iff all documents are valid.
 
     -m, --mappers LIST               List of mappers to use, Default MissingValuesMapper,KeyValueCorrectionsMapper,
@@ -22,5 +25,5 @@
     -h, --help                       Display this screen
 
 ## Contribute
-Clone, bundle install, rspec 
+Clone, bundle install, rspec
 Please use feature branches.
