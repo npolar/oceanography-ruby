@@ -1,4 +1,4 @@
-[![Code Climate](https://codeclimate.com/github/npolar/oceanography-ruby/badges/gpa.svg)](https://codeclimate.com/github/npolar/oceanography-ruby)
+[![Code Climate](https://codeclimate.com/github/npolar/oceanography-ruby/badges/gpa.svg)](https://codeclimate.com/github/npolar/oceanography-ruby) [![Test Coverage](https://codeclimate.com/github/npolar/oceanography-ruby/badges/coverage.svg)](https://codeclimate.com/github/npolar/oceanography-ruby)
 
 # oceanography-ruby
 
