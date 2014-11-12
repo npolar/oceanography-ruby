@@ -1,4 +1,7 @@
 # http://betterspecs.org/
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+
 require "simplecov"
 require "bundler/setup"
 require "rspec"

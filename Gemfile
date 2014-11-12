@@ -15,5 +15,6 @@ gem "npolar-api-client-ruby", path: "../npolar-api-client-ruby/"
 group :development, :test do
   gem "rspec"
   gem "simplecov"
-
 end
+
+gem "codeclimate-test-reporter", group: :test, require: nil
