@@ -25,7 +25,7 @@
       "type": "string",
       "description": "Cruise identifier"
     },
-    "type": {
+    "instrument_type": {
       "type": "string",
       "description": "Instrument type"
     },
@@ -87,10 +87,6 @@
 			"maximum":  180.0,
 			"description": "Location longitude in WGS-84"
 		},
-    "ctd": {
-      "type": "string",
-      "description": "Name of the used CTD. Example Sea-Bird SBE 9 Plus"
-    },
     "mooring": {
       "type": "string",
       "description": "Mooring id"
@@ -99,6 +95,10 @@
       "type": "number",
       "description": "Station identifier"
     },
+		"original_station": {
+			"type": "number",
+			"description": "Station identifier"
+		},
     "platform": {
       "type": "string",
       "description": "Platform from which the instrument was deployed. Example: RV Lance, sea-ice"
@@ -125,17 +125,13 @@
       "type": "date-time",
       "description": "Time of measurement"
     },
-    "water_depth": {
+    "sea_floor_depth_below_sea_surface": {
       "type": "string",
-      "description": "???"
-    },
-    "echo_depth": {
-      "type": "string",
-      "description": "???"
+      "description": "Sea depth"
     },
     "depth": {
       "type": "string",
-      "description": "???"
+      "description": "Measurement depth"
     }
 	},
 	"required": [
@@ -145,5 +141,5 @@
     "latitude",
     "id"
 	],
-	"additionalProperties": false
+	"additionalProperties": true
 }
