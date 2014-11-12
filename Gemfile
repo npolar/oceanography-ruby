@@ -10,7 +10,7 @@ gem "hashie"
 gem "uuidtools"
 gem "require_all"
 gem "json-schema"
-gem "npolar-api-client-ruby", path: "../npolar-api-client-ruby/"
+gem "npolar-api-client-ruby" #, path: "../npolar-api-client-ruby/"
 
 group :development, :test do
   gem "rspec"
