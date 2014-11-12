@@ -25,5 +25,5 @@ You need netcdf c lib installed.
     -h, --help                       Display this screen
 
 ## Contribute
-Clone, bundle install, rspec
+Clone, `bundle install`, `bundle exec rspec`  
 Please use feature branches.

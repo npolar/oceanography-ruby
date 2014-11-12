@@ -229,19 +229,8 @@ module Oceanography
       # atm. we simply scan for four digits to extract the starting year
 
       # Look in attribute "units", but fallback to "time" if not set
-      time_units = (timevar.att("units") || timevar.att("time")).get
-
-      match = time_units.match(/(?<resolution>\w+)\s+since\s+(?<since>.*)/)
-      if not "days" == match[:resolution]
-        raise "Only Julian days to DateTime is currently supported"
-      end
-
-      year_scan = match[:since].scan(/\d{4}/)
-      if not year_scan.size == 1
-        raise "Did not find a 4-digit year in #{time_units}"
-      end
-
-      year = year_scan[0].to_i
+      units_string = (timevar.att("units") || timevar.att("time")).get
+      year = year_from_units_string(units_string)
 
       timevar.get.to_a.map do |t|
         return nil if t.nan?
@@ -252,6 +241,20 @@ module Oceanography
 
         DateTime.jd( DateTime.civil(year).jd + t)
       end
+    end
+
+    def year_from_units_string(time_units)
+      match = time_units.match(/(?<resolution>\w+)\s+since\s+(?<since>.*)/)
+      if not "days" == match[:resolution]
+        raise "Only Julian days to DateTime is currently supported"
+      end
+
+      year_scan = match[:since].scan(/\d{4}/)
+      if not year_scan.size == 1
+        raise "Did not find a 4-digit year in #{time_units}"
+      end
+
+      year_scan[0].to_i
     end
   end
 end
