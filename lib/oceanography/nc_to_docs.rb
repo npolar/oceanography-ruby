@@ -1,6 +1,8 @@
 require "logger"
 require "hashie/mash"
 require "fileutils"
+require "uuidtools"
+require "json"
 require_relative "./log_helper"
 require_relative "./netcdf_reader"
 require_relative "./doc_splitter"
@@ -68,6 +70,8 @@ module Oceanography
         @config.mappers.each do |mapper|
           processed_doc = mapper.map(processed_doc)
         end
+        # Generate a namespaced uuid based on the json string and use that as the ID
+        processed_doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(processed_doc)).to_s
         processed_doc
       end
       docs

@@ -22,7 +22,7 @@ module Oceanography
             "northward_sea_water_velocity"
           when /^conductivity$/ui
             "sea_water_electrical_conductivity"
-          when /^(water_depth|echo_depth)$/ui
+          when /^(water_?depth|echo_?depth)$/ui
             "sea_floor_depth_below_sea_surface"
           when /^(dept|instrdepth)$/ui
             "depth"

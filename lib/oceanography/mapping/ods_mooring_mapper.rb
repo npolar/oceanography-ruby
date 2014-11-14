@@ -20,7 +20,10 @@ module Oceanography
           mooring = self.name_from_source(doc["source"])
         end
       end
-      doc["mooring"] = mooring ? mooring.upcase : mooring
+
+      if mooring
+        doc["mooring"] = mooring.upcase
+      end
       doc
     end
 
