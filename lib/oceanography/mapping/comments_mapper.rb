@@ -4,7 +4,7 @@ module Oceanography
     COMMENT_REGEX = /^comment(\d{2})?$/ui
 
     # Accepts flat hash merging all 'commentXX's keys to a 'comments' array
-    def self.map(doc)
+    def map(doc)
       doc.each_with_object({}) do |(key,value), hash|
         if key =~ COMMENT_REGEX
           hash["comments"] ||= []

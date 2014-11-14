@@ -17,7 +17,7 @@ module Oceanography
   class NcToDocs
 
     attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
-                :schema_validator, :sanity_validator, :docs_db_publisher
+                :schema_validator, :sanity_validator, :docs_db_publisher, :doc_splitter
 
 
     def initialize(config = {})
@@ -36,6 +36,7 @@ module Oceanography
       @sanity_validator = SanityValidator.new()
       @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
+      @doc_splitter = DocSplitter.new
     end
 
     def parse_files()
@@ -65,10 +66,10 @@ module Oceanography
     end
 
     def process(nc_hash)
-      docs = DocSplitter.to_docs(nc_hash).map do |doc|
+      docs = doc_splitter.to_docs(nc_hash).map do |doc|
         processed_doc = doc
         @config.mappers.each do |mapper|
-          processed_doc = mapper.map(processed_doc)
+          processed_doc = Oceanography.const_get(mapper.to_s).new.map(processed_doc)
         end
         # Generate a namespaced uuid based on the json string and use that as the ID
         processed_doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(processed_doc)).to_s

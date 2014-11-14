@@ -2,7 +2,7 @@ require "oceanography/mapping/ods_mooring_mapper"
 
 describe Oceanography::ODSMooringMapper do
   describe "#map" do
-    subject(:mapper) { Oceanography::ODSMooringMapper }
+    subject(:mapper) { Oceanography::ODSMooringMapper.new }
     doc = {
       "collection" => "mooring",
       "source" => ""

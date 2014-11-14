@@ -4,7 +4,7 @@ module Oceanography
 
     # Climate and forecast conventions variable and attribute mappper for common synonyms
     # @see http://cfconventions.org/Data/cf-standard-names/27/build/cf-standard-name-table.html
-    def self.map(hash)
+    def map(hash)
       mapped = {}
       hash.each do |k,v|
         key = case k

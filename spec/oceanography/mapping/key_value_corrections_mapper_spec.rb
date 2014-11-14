@@ -2,7 +2,7 @@ require "oceanography/mapping/key_value_corrections_mapper"
 
 describe Oceanography::KeyValueCorrectionsMapper do
   describe "#map" do
-    subject(:mapper) { Oceanography::KeyValueCorrectionsMapper }
+    subject(:mapper) { Oceanography::KeyValueCorrectionsMapper.new }
 
     it "should convert all key to lowercase" do
       expect(mapper.map({"UPPER" => nil})).to have_key("upper")

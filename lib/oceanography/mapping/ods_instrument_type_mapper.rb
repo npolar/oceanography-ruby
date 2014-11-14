@@ -3,7 +3,7 @@ module Oceanography
   class ODSInstrumentTypeMapper
 
     # Accepts flat Hash of key-value pairs
-    def self.map(doc)
+    def map(doc)
       ctd = doc["ctd"]
       instrument_type = doc["instrument_type"] || ""
 

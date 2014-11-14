@@ -2,7 +2,7 @@ require "oceanography/mapping/ods_climate_forecast_mapper"
 
 describe Oceanography::ODSClimateForecastMapper do
   describe "#map" do
-    subject(:cf_mapper) { Oceanography::ODSClimateForecastMapper }
+    subject(:cf_mapper) { Oceanography::ODSClimateForecastMapper.new }
 
     it "should use 'sea_water_temperature' for 't'" do
       expect(cf_mapper.map({"t" => 0})).to have_key("sea_water_temperature")

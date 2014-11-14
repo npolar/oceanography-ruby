@@ -2,7 +2,7 @@ module Oceanography
   class DocSplitter
 
     # Takes a NetCDF hash and splits it into one doc per measurement
-    def self.to_docs(nc_hash)
+    def to_docs(nc_hash)
         docs = []
         data = nc_hash["data"]
         variables = nc_hash["variables"]
@@ -33,7 +33,7 @@ module Oceanography
             end
 
             # Use time varibale as "measured" if unknown
-            if (self.measured_time_unknown?(key, value, doc))
+            if (measured_time_unknown?(key, value, doc))
               key = "measured"
             end
 
@@ -49,7 +49,7 @@ module Oceanography
     end
 
     private
-    def self.measured_time_unknown?(key, value, doc)
+    def measured_time_unknown?(key, value, doc)
       key == "time" &&
       !value.kind_of?(Array) &&
       doc["measured"] == "unknown"

@@ -2,7 +2,7 @@ require "oceanography/mapping/comments_mapper"
 
 describe Oceanography::CommentsMapper do
   describe "#process" do
-    subject(:mapper) { Oceanography::CommentsMapper }
+    subject(:mapper) { Oceanography::CommentsMapper.new }
     doc = {
       "comment01" => "First comment",
       "comment02" => "Second comment"

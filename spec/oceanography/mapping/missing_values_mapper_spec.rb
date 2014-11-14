@@ -2,7 +2,7 @@ require "oceanography/mapping/missing_values_mapper"
 
 describe Oceanography::MissingValuesMapper do
   describe "#map" do
-    subject(:mapper) { Oceanography::MissingValuesMapper }
+    subject(:mapper) { Oceanography::MissingValuesMapper.new }
 
     context "with 'missing_value'" do
       doc = {

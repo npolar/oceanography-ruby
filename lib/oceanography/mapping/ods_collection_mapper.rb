@@ -3,7 +3,7 @@ module Oceanography
   class ODSCollectionMapper
 
     # Accepts flat Hash of key-value pairs adding collection property
-    def self.map(doc)
+    def map(doc)
       collection = case
         when doc.has_key?("mooring")
           "mooring"
