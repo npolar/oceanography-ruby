@@ -5,7 +5,7 @@ require "fileutils"
 
 describe Oceanography::NcToDocs do
 
-  TMP_DIR = "_tmp"
+  TMP_DIR = "./_tmp"
 
   describe "#parse_files" do
     after(:all) do
@@ -15,7 +15,7 @@ describe Oceanography::NcToDocs do
     it "should write files when out_path is given" do
       nc_to_docs = Oceanography::NcToDocs.new({
         out_path: TMP_DIR,
-        base_path: "spec",
+        base_path: "./spec",
         mappers: ["KeyValueCorrectionsMapper"]
       })
       nc_to_docs.parse_files()
@@ -25,7 +25,7 @@ describe Oceanography::NcToDocs do
     it "should POST to API when api_url is given" do
       nc_to_docs = Oceanography::NcToDocs.new({
         api_url: "http://localhost:9393/oceanography",
-        base_path: "spec",
+        base_path: "./spec",
         mappers: ["KeyValueCorrectionsMapper"]
       })
       expect(nc_to_docs.docs_db_publisher).to receive(:post)

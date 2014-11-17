@@ -6,17 +6,12 @@
 	"properties": {
 		"collection": {
 			"type": "string",
-			"enum": [
-				"cast",
-				"mooring"
-			],
+			"enum": [ "cast", "mooring" ],
 			"description": "Collection type"
 		},
 		"comments": {
 			"type": "array",
-			"items": {
-				"type": "string"
-			},
+			"items": { "type": "string" },
 			"description": "Comments"
 		},
 		"cruise": {
@@ -24,26 +19,17 @@
 			"description": "Cruise identifier"
 		},
 		"depth": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"description": "Measurement depth"
 		},
 		"direction_of_sea_water_velocity": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": 0,
 			"maximum": 360,
 			"description": "Degrees from north"
 		},
 		"eastward_sea_water_velocity": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": -10,
 			"maximum": 10,
 			"description": "Eastward sea water velocity in m/s"
@@ -74,17 +60,11 @@
 			"description": "Date and time of measurement serie"
 		},
 		"mooring": {
-			"type": [
-				"string",
-				"null"
-			],
+			"type": [ "string", "null" ],
 			"description": "Mooring id"
 		},
 		"northward_sea_water_velocity": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": -10,
 			"maximum": 10,
 			"description": "Northward sea water velocity in m/s"
@@ -94,51 +74,33 @@
 			"description": "Station identifier"
 		},
 		"platform": {
-			"type": [
-				"string",
-				"null"
-			],
+			"type": [ "string", "null" ],
 			"description": "Platform from which the instrument was deployed. Example: RV Lance, sea-ice"
 		},
 		"sea_floor_depth_below_sea_surface": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"description": "Sea depth"
 		},
 		"sea_water_electrical_conductivity": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": 0,
 			"maximum": 2000,
 			"description": "Conductivity in Siemens per meter (S/m)"
 		},
 		"sea_water_pressure": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": 0,
 			"maximum": 3000,
 			"description": "Pressure in decibar"
 		},
 		"sea_water_salinity": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": 25,
 			"maximum": 45,
 			"description": "Salinity in particle salinity units (PSU) PPS-78"
 		},
 		"sea_water_temperature": {
-			"type": [
-				"number",
-				"null"
-			],
+			"type": [ "number", "null" ],
 			"minimum": -5,
 			"maximum": 1000,
 			"description": "Temperature in degrees Celsius ITS-90"
