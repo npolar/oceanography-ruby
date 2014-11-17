@@ -84,30 +84,30 @@
 		"sea_water_electrical_conductivity": {
 			"type": [ "number", "null" ],
 			"minimum": 0,
-			"maximum": 2000,
+			"maximum": 10,
 			"description": "Conductivity in Siemens per meter (S/m)"
 		},
 		"sea_water_pressure": {
 			"type": [ "number", "null" ],
 			"minimum": 0,
-			"maximum": 3000,
+			"maximum": 5000,
 			"description": "Pressure in decibar"
 		},
 		"sea_water_salinity": {
 			"type": [ "number", "null" ],
-			"minimum": 25,
+			"minimum": 15,
 			"maximum": 45,
 			"description": "Salinity in particle salinity units (PSU) PPS-78"
 		},
 		"sea_water_temperature": {
 			"type": [ "number", "null" ],
 			"minimum": -5,
-			"maximum": 1000,
+			"maximum": 50,
 			"description": "Temperature in degrees Celsius ITS-90"
 		},
 		"serial_number": {
 			"type": "string",
-			"description": "Instrument serial number ???"
+			"description": "Instrument serial number"
 		},
 		"start_date": {
 			"type": "string",
