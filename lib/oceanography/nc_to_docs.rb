@@ -42,6 +42,9 @@ module Oceanography
 
     def parse_files()
       log.info(log_helper.start_scan())
+      puts("#{config.base_path}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc")
+      puts(Dir.pwd)
+      puts(Dir.entries("."))
       files = Dir["#{config.base_path}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc"]
       files.each do |file|
         next if bad_data?(file)
