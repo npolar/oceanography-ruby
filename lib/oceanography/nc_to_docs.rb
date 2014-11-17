@@ -44,7 +44,12 @@ module Oceanography
       log.info(log_helper.start_scan())
       puts("#{config.base_path}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc")
       puts(Dir.pwd)
-      puts(Dir.entries("."))
+      puts(Dir.entries("spec/oceanography/_data/ods/cast/1981"))
+      puts(Dir.glob("spec/oceanography/_data/ods/cast/**/*.nc"))
+      puts(Dir.glob("spec/oceanography/_data/ods/cast/**/*.*"))
+      puts(Dir.glob("**/*.nc"))
+      puts(Dir.glob("**/*.*"))
+      puts(Dir["**/*.nc"])
       files = Dir["#{config.base_path}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc"]
       files.each do |file|
         next if bad_data?(file)
