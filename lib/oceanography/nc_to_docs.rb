@@ -76,6 +76,7 @@ module Oceanography
         @config.mappers.each do |mapper|
           processed_doc = Oceanography.const_get(mapper.to_s).new.map(processed_doc)
         end
+        processed_doc.delete("units")
         # Generate a namespaced uuid based on the json string and use that as the ID
         processed_doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(processed_doc)).to_s
         processed_doc

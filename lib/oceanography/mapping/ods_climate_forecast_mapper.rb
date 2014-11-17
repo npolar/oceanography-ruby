@@ -6,6 +6,7 @@ module Oceanography
     # @see http://cfconventions.org/Data/cf-standard-names/27/build/cf-standard-name-table.html
     def map(hash)
       mapped = {}
+      units = hash.delete("units")
       hash.each do |k,v|
         key = case k
           when /^(temperature|temp|t)$/ui
@@ -28,9 +29,28 @@ module Oceanography
             "depth"
           else k.downcase
         end
-        mapped[key]=v
+        unit = units ? units.delete(k) : nil
+        if unit
+          converted = convert_units(key, v, unit)
+          mapped[key] = converted["value"]
+          units[key] = converted["unit"]
+        else
+          mapped[key] = v
+        end
       end
-      mapped
+      mapped.merge({"units" => units})
+    end
+
+    def convert_units(key, value, unit)
+      converted = {
+        "value" => value,
+        "unit" => unit
+      }
+      if unit == "cm/s"
+        converted["value"] = value / 10
+        converted["unit"] = "m/s"
+      end
+      converted
     end
   end
 end

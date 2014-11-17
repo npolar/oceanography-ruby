@@ -48,6 +48,7 @@ module Oceanography
 
         data[key] = doc_value
       end
+      data
     end
 
     def units(nc_hash)
