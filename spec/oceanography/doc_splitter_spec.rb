@@ -50,5 +50,11 @@ describe "Oceanography::DocSplitter.to_docs" do
         expect(doc["measured"]).to eq(dump_data["attributes"]["time"])
       end
     end
+
+    it "should add units hash" do
+      subject.each do |doc|
+        expect(doc["units"]).not_to be_nil
+      end
+    end
   end
 end
