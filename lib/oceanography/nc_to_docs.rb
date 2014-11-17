@@ -45,7 +45,11 @@ module Oceanography
       files.each do |file|
         next if bad_data?(file)
         log.info(log_helper.start_parse(file))
-        raw_hash = netcdf_reader.open(file).hash()
+        begin
+          raw_hash = open_file(file)
+        rescue
+          next
+        end
         docs = process(raw_hash)
         valid_docs = docs.select { |doc| schema_validator.valid?(doc) }
         log.info("#{docs.size-valid_docs.size} of #{docs.size} docs rejected.")
@@ -80,6 +84,16 @@ module Oceanography
 
     def bad_data?(file)
       file =~ /#{File::SEPARATOR}OLD#{File::SEPARATOR}/ui
+    end
+
+    def open_file(file)
+      begin
+        netcdf_reader.open(file).hash()
+      rescue => e
+        log.warn("Could not open #{file}")
+        log.warn(e)
+        raise e
+      end
     end
   end
 end

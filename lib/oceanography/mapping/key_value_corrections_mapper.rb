@@ -32,7 +32,7 @@ module Oceanography
       elsif value.kind_of?(Float)
         value.round(5)
       elsif value.kind_of?(DateTime)
-          value.to_time.utc.iso8601
+        value.to_time.utc.iso8601
       elsif ['measured', 'start_date', 'stop_date'].include?(key)
         y,m,d,h,min,s = *value.fill(0, value.size, 6-value.size)
         y = y == 91 ? 1991 : y

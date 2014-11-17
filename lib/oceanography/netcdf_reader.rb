@@ -39,22 +39,6 @@ module Oceanography
     # See #attributes and #variables
     attr_accessor :mapper
 
-    def self.ncjson(argv=ARGV)
-      begin
-        if argv.size < 1 or not File.exists?(argv[0])
-          raise "Error: missing netCDF input file\n"
-        end
-        n = Oceanography::NetCDF.new
-        n.log = Logger.new(STDERR)
-        n.open(argv[0])
-        m = argv[1] ||= "hash"
-        puts JSON.pretty_generate(n.send(m.to_sym))
-      rescue => e
-        STDERR.write(e.message+"\n")
-        exit(-1)
-      end
-    end
-
     def initialize(config = CONFIG)
       @config = Hashie::Mash.new(config)
       if @config.log?
