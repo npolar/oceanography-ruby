@@ -27,5 +27,13 @@ describe Oceanography::ODSMooringMapper do
     it "should parse name from source" do
       expect(mapper.map(doc.merge({"source" => "a/path/fny/nc001.nc"}))["mooring"]).to eq("FNY")
     end
+
+    it "should add deployment number from mooring" do
+      expect(mapper.map(doc.merge({"mooring" => "F11-3"}))["deployment"]).to eq(3)
+    end
+
+    it "should add deployment number from string" do
+      expect(mapper.map(doc.merge({"mooring" => "Fram-Strait Mooring F13-9"}))["deployment"]).to eq(9)
+    end
   end
 end
