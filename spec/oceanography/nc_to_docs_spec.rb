@@ -5,7 +5,7 @@ require "fileutils"
 
 describe Oceanography::NcToDocs do
 
-  TMP_DIR = "./_tmp"
+  TMP_DIR = "/tmp/spec_data"
 
   describe "#parse_files" do
     after(:all) do

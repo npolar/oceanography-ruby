@@ -23,6 +23,7 @@ module Oceanography
     def initialize(config = {})
       @config = Hashie::Mash.new({
         log_level: Logger::INFO,
+        base_path: ".",
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
                   ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
                   ODSClimateForecastMapper]
