@@ -5,7 +5,7 @@ require_relative "../ncml"
 
 describe Oceanography::NetCDFReader do
 
-  before { skip }
+  before { skip("No ncdump on travis") }
 
   EPSILON = 1.0e-13 # Required precision for floats
 

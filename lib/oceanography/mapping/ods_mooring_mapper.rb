@@ -6,10 +6,9 @@ module Oceanography
 
     # Accepts flat Hash of key-value pairs
     def map(doc)
-      mooring = doc["mooring"]
       if doc["collection"] == "mooring"
         # Is it something like Fram-Strait F14-5 ?
-        mooring_data = id_from_mooring(mooring)
+        mooring_data = id_from_mooring(doc["mooring"])
         if !mooring_data
           mooring_data = id_from_comments(doc["comments"])
         end
@@ -19,9 +18,9 @@ module Oceanography
         if !mooring_data
           mooring_data = name_from_source(doc["source"])
         end
+        doc.merge!(mooring_data)
       end
-
-      doc.merge(mooring_data)
+      doc
     end
 
     def id_from_mooring(mooring)
