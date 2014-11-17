@@ -16,6 +16,14 @@ describe Oceanography::KeyValueCorrectionsMapper do
       expect(mapper.map({"serialnumber" => nil})).to have_key("serial_number")
     end
 
+    it "should correct spelling of 'inst_type' to 'instrument_type'" do
+      expect(mapper.map({"INST_TYPE" => nil})).to have_key("instrument_type")
+    end
+
+    it "should correct spelling of 'type' to 'instrument_type'" do
+      expect(mapper.map({"type" => nil})).to have_key("instrument_type")
+    end
+
     it "should unwrap arrays of size 1" do
       expect(mapper.map({"array" => [1]})["array"]).to eq(1)
     end
