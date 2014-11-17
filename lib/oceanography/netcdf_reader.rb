@@ -154,7 +154,7 @@ module Oceanography
 
       var.att_names.each do |a|
         key = case a
-          when /^unit(s)?$/ui
+          when /units?$/ui
               "units"
           when /^long(_)?name?$/ui
               "long_name"
