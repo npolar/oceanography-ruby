@@ -6,8 +6,6 @@ Gemfile.lock
 /InstalledFiles
 /pkg/
 /spec/reports/
-/spec/oceanography/_data/**/*.nc
-/spec/oceanography/_data/**/*.xml
 /test/tmp/
 /test/version_tmp/
 /tmp/

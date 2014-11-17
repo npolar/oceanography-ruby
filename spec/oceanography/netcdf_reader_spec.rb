@@ -5,7 +5,7 @@ require_relative "../ncml"
 
 describe Oceanography::NetCDFReader do
 
-  before { skip("No ncdump on travis") }
+  #before { skip("No ncdump on travis") }
 
   EPSILON = 1.0e-13 # Required precision for floats
 
@@ -17,7 +17,9 @@ describe Oceanography::NetCDFReader do
 
         before do
           nc_filename = f.gsub(/cdl/, "nc")
-          `ncgen -o #{nc_filename} #{f}`
+          if not File.exists? nc_filename
+            `ncgen -o #{nc_filename} #{f}`
+          end
 
           @netcdf = Oceanography::NetCDFReader.new
           @netcdf.open(nc_filename)
