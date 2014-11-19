@@ -1,5 +1,4 @@
 require "spec_helper"
-
 require "oceanography/netcdf_reader"
 require_relative "../ncml"
 

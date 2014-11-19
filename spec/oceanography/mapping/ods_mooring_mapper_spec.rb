@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/ods_mooring_mapper"
 
 describe Oceanography::ODSMooringMapper do

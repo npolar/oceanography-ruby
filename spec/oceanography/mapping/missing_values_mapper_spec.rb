@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/missing_values_mapper"
 
 describe Oceanography::MissingValuesMapper do

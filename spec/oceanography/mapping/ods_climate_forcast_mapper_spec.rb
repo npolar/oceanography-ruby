@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/ods_climate_forecast_mapper"
 
 describe Oceanography::ODSClimateForecastMapper do

@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/comments_mapper"
 
 describe Oceanography::CommentsMapper do

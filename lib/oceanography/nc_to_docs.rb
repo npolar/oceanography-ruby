@@ -8,6 +8,7 @@ require_relative "./netcdf_reader"
 require_relative "./doc_splitter"
 require_relative "./doc_filewriter"
 require_relative "./docs_db_publisher"
+require_relative "./filter/key_filter"
 require "require_all"
 require_rel "mapping"
 require_rel "validation"
@@ -17,7 +18,8 @@ module Oceanography
   class NcToDocs
 
     attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
-                :schema_validator, :sanity_validator, :docs_db_publisher, :doc_splitter
+                :schema_validator, :sanity_validator, :docs_db_publisher,
+                :doc_splitter, :key_filter
 
 
     def initialize(config = {})
@@ -38,6 +40,7 @@ module Oceanography
       @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
       @doc_splitter = DocSplitter.new
+      @key_filter = KeyFilter.new
     end
 
     def parse_files()
@@ -72,7 +75,7 @@ module Oceanography
 
     def process(nc_hash)
       docs = doc_splitter.to_docs(nc_hash).map do |doc|
-        processed_doc = doc
+        processed_doc = key_filter.filter(doc)
         @config.mappers.each do |mapper|
           processed_doc = Oceanography.const_get(mapper.to_s).new.map(processed_doc)
         end

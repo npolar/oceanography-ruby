@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/validation/schema_validator"
 require "logger"
 

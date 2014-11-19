@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/ods_instrument_type_mapper"
 
 describe Oceanography::ODSInstrumentTypeMapper do

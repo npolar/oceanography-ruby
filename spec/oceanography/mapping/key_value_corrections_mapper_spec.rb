@@ -1,3 +1,4 @@
+require "spec_helper"
 require "oceanography/mapping/key_value_corrections_mapper"
 
 describe Oceanography::KeyValueCorrectionsMapper do
