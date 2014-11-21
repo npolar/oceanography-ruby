@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
-require "bundler/setup"
-require "optparse"
-require_relative "../lib/oceanography/nc_to_docs"
+Dir.chdir(__dir__) do
+  require "bundler/setup"
+  require "optparse"
+  require_relative "../lib/oceanography/nc_to_docs"
+end
 
 begin
   options = {}

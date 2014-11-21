@@ -7,7 +7,7 @@ module Oceanography
 
     def filter(doc)
       doc.reject do |k,v|
-        @key_blacklist.include?(k)
+        @key_blacklist.include?(k) || v.nil?
       end
     end
   end
