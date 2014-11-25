@@ -7,7 +7,7 @@ end
 
 begin
   options = {}
-  banner = "Usage: ./ncdocs.sh [options] FILE_PATTERN [DOCDB_URL] \nIf DOCDB_URL is given json documents will be PUT to that URL iff all documents are valid.\n\n"
+  banner = "Usage: ./ncdocs.sh [options] FILE_PATTERN"
   optparse = OptionParser.new do |opts|
     opts.banner = banner
 
@@ -16,6 +16,7 @@ begin
         options[:mappers] = v.split(',')
       }
     opts.on('-o', '--outpath PATH', 'Path to write json docs to.') { |v| options[:out_path] = v }
+    opts.on('-p', '--post URL', 'URL to post json docs to.') { |v| options[:api_url] = v }
     opts.on('-s', '--schema PATH', 'Path to json schema to validate docs against') { |v| options[:schema] = v }
     opts.on('-v', '--verbose', 'Log level debug. Default info') { |v| options[:log_level] = Logger::DEBUG }
     opts.on('-h', '--help', 'Display this screen') do
@@ -35,7 +36,6 @@ begin
   end
 
   options["file_pattern"] = ARGV[0]
-  options["api_url"] = ARGV[1]
 
   nc_to_docs = Oceanography::NcToDocs.new(options)
   nc_to_docs.parse_files()
