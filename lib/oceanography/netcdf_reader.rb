@@ -199,6 +199,9 @@ module Oceanography
         else var.get.to_a
       end
 
+      # Some NArray slipps through .. :(
+      v = v.to_a if v.kind_of?(NArray)
+
       v
     end
 

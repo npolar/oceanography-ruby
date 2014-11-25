@@ -15,7 +15,7 @@ module Oceanography
           value = instrument_type(value)
         end
         key = correct_key(key)
-        hash[key] = value_mapper(key,v)
+        hash[key] = value_mapper(key,value)
       end
     end
 
