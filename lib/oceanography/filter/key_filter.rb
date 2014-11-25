@@ -2,7 +2,7 @@ module Oceanography
   class KeyFilter
 
     def initialize()
-      @key_blacklist = ["data_origin"]
+      @key_blacklist = ["data_origin", "units"]
     end
 
     def filter(doc)

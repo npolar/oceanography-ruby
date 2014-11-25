@@ -25,7 +25,7 @@ module Oceanography
     def initialize(config = {})
       @config = Hashie::Mash.new({
         log_level: Logger::INFO,
-        base_path: ".",
+        file_pattern: ".",
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
                   ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
                   ODSClimateForecastMapper]
@@ -45,10 +45,12 @@ module Oceanography
 
     def parse_files()
       log.info(log_helper.start_scan())
-      files = Dir["#{config.base_path}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc"]
-      files.each do |file|
+      files = Dir["#{config.file_pattern}"]
+      status = true
+      files.each_with_index do |file, index|
         next if bad_data?(file)
-        log.info(log_helper.start_parse(file))
+        log.info(log_helper.start_parse(file, index, files.size))
+
         begin
           raw_hash = open_file(file)
         rescue
@@ -61,25 +63,26 @@ module Oceanography
         all_docs_valid = (valid_docs.size == docs.size)
 
         if config.out_path?
-          doc_file_writer.write(valid_docs, file)
+          status = doc_file_writer.write(valid_docs, file)
         end
 
         if config.api_url? && all_docs_valid
-          docs_db_publisher.post(valid_docs, file)
+          status = docs_db_publisher.post(valid_docs, file)
         end
 
         log.info(log_helper.stop_parse(file))
+        break if !status
       end
-      log.info(log_helper.stop_scan(files))
+      log.info(log_helper.stop_scan(files, status))
     end
 
     def process(nc_hash)
       docs = doc_splitter.to_docs(nc_hash).map do |doc|
-        processed_doc = key_filter.filter(doc)
+        processed_doc = doc
         @config.mappers.each do |mapper|
           processed_doc = Oceanography.const_get(mapper.to_s).new.map(processed_doc)
         end
-        processed_doc.delete("units")
+        processed_doc = key_filter.filter(processed_doc)
         # Generate a namespaced uuid based on the json string and use that as the ID
         processed_doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(processed_doc)).to_s
         processed_doc

@@ -13,7 +13,17 @@ module Oceanography
     end
 
     def post(docs, original_file)
-      client.post(docs)
+      response = client.post(docs)
+      if response.is_a? Array
+        response.all? {|r| success?(r) }
+      else
+        success?(response)
+      end
+    end
+
+    private
+    def success?(response)
+      (200..299).include? response.code
     end
   end
 end

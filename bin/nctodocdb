@@ -7,7 +7,7 @@ end
 
 begin
   options = {}
-  banner = "Usage: ./ncdocs.sh [options] PATH [DOCDB_URL] \nIf DOCDB_URL is given json documents will be PUT to that URL iff all documents are valid.\n\n"
+  banner = "Usage: ./ncdocs.sh [options] FILE_PATTERN [DOCDB_URL] \nIf DOCDB_URL is given json documents will be PUT to that URL iff all documents are valid.\n\n"
   optparse = OptionParser.new do |opts|
     opts.banner = banner
 
@@ -34,7 +34,7 @@ begin
     exit
   end
 
-  options["base_path"] = ARGV[0]
+  options["file_pattern"] = ARGV[0]
   options["api_url"] = ARGV[1]
 
   nc_to_docs = Oceanography::NcToDocs.new(options)
