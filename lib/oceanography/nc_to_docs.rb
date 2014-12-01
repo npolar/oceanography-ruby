@@ -25,7 +25,7 @@ module Oceanography
     def initialize(config = {})
       @config = Hashie::Mash.new({
         log_level: Logger::INFO,
-        file_pattern: ".",
+        file_path: ".",
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
                   ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
                   ODSClimateForecastMapper]
@@ -39,55 +39,59 @@ module Oceanography
       @sanity_validator = SanityValidator.new()
       @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
-      @doc_splitter = DocSplitter.new
+      @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
     end
 
     def parse_files()
       log.info(log_helper.start_scan())
-      files = Dir["#{config.file_pattern}"]
-      status = true
-      files.each_with_index do |file, index|
-        next if bad_data?(file)
-        log.info(log_helper.start_parse(file, index, files.size))
+      files = get_files()
+      current_file = nil
+      begin
+        files.each_with_index do |file, index|
+          current_file = file
+          next if bad_data?(file)
+          log.info(log_helper.start_parse(file, index, files.size))
 
-        begin
           raw_hash = open_file(file)
-        rescue
-          next
+          docs = doc_splitter.to_docs(raw_hash, process())
+
+          save_docs(docs, file)
+
+          log.info(log_helper.stop_parse(file))
         end
-        docs = process(raw_hash)
-        valid_docs = docs.select { |doc| schema_validator.valid?(doc) }
-        log.info("#{docs.size-valid_docs.size} of #{docs.size} docs rejected.")
-
-        all_docs_valid = (valid_docs.size == docs.size)
-
-        if config.out_path?
-          status = doc_file_writer.write(valid_docs, file)
-        end
-
-        if config.api_url? && all_docs_valid
-          status = docs_db_publisher.post(valid_docs, file)
-        end
-
-        log.info(log_helper.stop_parse(file))
-        break if !status
+      rescue => e
+        log.error(log_helper.abort(current_file))
+        raise e
       end
-      log.info(log_helper.stop_scan(files, status))
+      log.info(log_helper.stop_scan(files))
     end
 
-    def process(nc_hash)
-      docs = doc_splitter.to_docs(nc_hash).map do |doc|
-        processed_doc = doc
+    def process()
+      lambda do |raw_doc|
+        doc = raw_doc
         @config.mappers.each do |mapper|
-          processed_doc = Oceanography.const_get(mapper.to_s).new.map(processed_doc)
+          doc = Oceanography.const_get(mapper.to_s).new.map(doc)
         end
-        processed_doc = key_filter.filter(processed_doc)
+        doc = key_filter.filter(doc)
         # Generate a namespaced uuid based on the json string and use that as the ID
-        processed_doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(processed_doc)).to_s
-        processed_doc
+        doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
+        log.debug(doc)
+        if !schema_validator.valid?(doc)
+          throw "#{doc["id"]} not valid!"
+        end
+        doc
       end
-      docs
+    end
+
+    def save_docs(docs, file)
+      if config.out_path?
+        doc_file_writer.write(docs, file)
+      end
+
+      if config.api_url?
+        docs_db_publisher.post(docs, file)
+      end
     end
 
     def bad_data?(file)
@@ -99,9 +103,24 @@ module Oceanography
         netcdf_reader.open(file).hash()
       rescue => e
         log.warn("Could not open #{file}")
-        log.warn(e)
         raise e
       end
+    end
+
+    def get_files()
+      files = []
+      fp = config.file_path
+      if !fp.kind_of?(Array)
+        fp = [fp]
+      end
+      fp.each do |f|
+        if Dir.exist?(f)
+          files += Dir["#{f}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc"]
+        elsif File.exist?(f)
+          files.push(f)
+        end
+      end
+      files
     end
   end
 end

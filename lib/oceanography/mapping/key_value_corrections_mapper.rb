@@ -13,6 +13,11 @@ module Oceanography
         elsif (k =~ /^(inst_type|type)$/ui)
           key = "instrument_type"
           value = instrument_type(value)
+        elsif (k =~ /^((original_?)?station)$/ui)
+          value = v.to_s
+        elsif k =~ /^cruise$/ui
+          match = v.match(/^fs(?<cruise>\d{4})$/ui)
+          value = match ? "FramStrait_" + match[:cruise] : v
         end
         key = correct_key(key)
         hash[key] = value_mapper(key,value)
@@ -54,10 +59,9 @@ module Oceanography
     # instrument_type can be String or [nil, "typ", nil]
     def instrument_type(value)
       if value.kind_of?(Array)
-        value.find { |v| v.kind_of?(String) }
-      else
-        value
+        value = value.find { |v| !v.nil? }
       end
+      value.nil? ? nil : value.to_s
     end
   end
 end

@@ -8,13 +8,8 @@ module Oceanography
     def map(doc)
       if doc["collection"] == "mooring"
         # Is it something like Fram-Strait F14-5 ?
-        mooring_data = id_from_mooring(doc["mooring"])
-        if !mooring_data
-          mooring_data = id_from_comments(doc["comments"])
-        end
-        if !mooring_data
-          mooring_data = id_from_source(doc["source"])
-        end
+        match = mooring_data(doc).match(/#{MOORING_ID}/ui)
+        mooring_data = match_data_to_hash(match)
         if !mooring_data
           mooring_data = name_from_source(doc["source"])
         end
@@ -23,21 +18,8 @@ module Oceanography
       doc
     end
 
-    def id_from_mooring(mooring)
-      return nil if mooring.nil?
-      match = mooring.match(/#{MOORING_ID}/ui)
-      match_data_to_hash(match)
-    end
-
-    def id_from_comments(comments)
-      return nil if comments.nil?
-      match = comments.join.match(/mooring #{MOORING_ID}/ui)
-      match_data_to_hash(match)
-    end
-
-    def id_from_source(source)
-      match = source.match(/#{File::SEPARATOR}#{MOORING_ID}#{File::SEPARATOR}/ui)
-      match_data_to_hash(match)
+    def mooring_data(doc)
+      (doc["mooring"] || "") + (doc["comments"] || []).join + doc["source"]
     end
 
     def name_from_source(source)

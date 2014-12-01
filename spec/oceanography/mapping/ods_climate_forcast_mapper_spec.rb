@@ -18,15 +18,15 @@ describe Oceanography::ODSClimateForecastMapper do
     end
 
     it "should use 'sea_water_pressure' for 'p'" do
-      expect(cf_mapper.map({"p" => 0})).to have_key("sea_water_pressure")
+      expect(cf_mapper.map({"p" => 0})).to have_key("sea_water_pressure_due_to_sea_water")
     end
 
     it "should use 'sea_water_pressure' for 'pres'" do
-      expect(cf_mapper.map({"pres" => 0})).to have_key("sea_water_pressure")
+      expect(cf_mapper.map({"pres" => 0})).to have_key("sea_water_pressure_due_to_sea_water")
     end
 
     it "should use 'sea_water_pressure' for 'pressure'" do
-      expect(cf_mapper.map({"pressure" => 0})).to have_key("sea_water_pressure")
+      expect(cf_mapper.map({"pressure" => 0})).to have_key("sea_water_pressure_due_to_sea_water")
     end
 
     it "should use 'sea_water_salinity' for 's'" do
@@ -74,7 +74,7 @@ describe Oceanography::ODSClimateForecastMapper do
     end
 
     it "should convert cm/s to m/s" do
-      expect(cf_mapper.map({"a" => 10, "units" => {"a" => "cm/s"}})["a"]).to eq(1)
+      expect(cf_mapper.map({"a" => 100, "units" => {"a" => "cm/s"}})["a"]).to eq(1)
     end
 
   end

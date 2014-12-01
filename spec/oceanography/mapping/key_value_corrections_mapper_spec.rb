@@ -56,5 +56,9 @@ describe Oceanography::KeyValueCorrectionsMapper do
     it "should convert DateTime to iso8601 string" do
       expect(mapper.map({"time" => DateTime.new(1981,10,11,15,21,0)})["time"]).to eq("1981-10-11T15:21:00Z")
     end
+
+    it "should correct fs cruise codes to FramStrait..." do
+      expect(mapper.map({"cruise" => "fs2009"})["cruise"]).to eq("FramStrait_2009")
+    end
   end
 end

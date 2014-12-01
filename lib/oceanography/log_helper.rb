@@ -15,12 +15,8 @@ module Oceanography
       message
     end
 
-    def stop_scan(files, status)
-      if status
-        "Parsing of #{files.size || 0} files done."
-      else
-        "Parsing aborted due to failure"
-      end
+    def stop_scan(files)
+      "Parsing of #{files.size || 0} files done."
     end
 
     def start_parse(file, index, total)
@@ -29,8 +25,12 @@ module Oceanography
     end
 
     def stop_parse(file)
-      time = Time.now - timing[file]
+      time = (Time.now - timing[file]) * 1000
       "Processing #{file} took #{time}ms"
+    end
+
+    def abort(file)
+      "Parsing of #{file} aborted due to failure"
     end
   end
 end

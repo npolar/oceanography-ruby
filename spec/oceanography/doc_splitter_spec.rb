@@ -5,14 +5,21 @@ require "uuidtools"
 dump_data = eval File.read("spec/oceanography/_data/dump.rb")
 
 describe "Oceanography::DocSplitter.to_docs" do
-  subject {Oceanography::DocSplitter.new.to_docs(dump_data).size}
+  logger = Logger.new(STDERR)
+  dummy_lambda = lambda { |doc| doc }
+
+  before(:all) do
+    logger.level = Logger::INFO
+  end
+
+  subject {Oceanography::DocSplitter.new({log: logger}).to_docs(dump_data, dummy_lambda).size}
 
   it "returns array of correct size" do
     expect(subject).to eq(6)
   end
 
   context "doc contents" do
-    subject {Oceanography::DocSplitter.new.to_docs(dump_data)}
+    subject {Oceanography::DocSplitter.new({log: logger}).to_docs(dump_data, dummy_lambda)}
     it "should have variable data" do
       subject.each do |doc|
         expect(doc.keys).to include(*dump_data["data"].keys)
@@ -28,8 +35,7 @@ describe "Oceanography::DocSplitter.to_docs" do
 
     it "should split max dimension variable values into each doc" do
       subject.each_with_index do |doc,i|
-        expected = dump_data["data"]["max"].flatten[i]
-        expect(doc["max"]).to eq(expected)
+        expect(doc["max"]).to eq(8)
       end
     end
 
@@ -53,7 +59,7 @@ describe "Oceanography::DocSplitter.to_docs" do
 
     it "should add units hash" do
       subject.each do |doc|
-        expect(doc["units"]).not_to be_nil
+        expect(doc["units"]).to be_kind_of(Hash)
       end
     end
   end

@@ -22,7 +22,7 @@ describe Oceanography::MissingValuesMapper do
 
     context "without 'missing_value'" do
       doc = {
-        "var1" => -9999
+        "var1" => -9000
       }
 
       it "should return original hash" do

@@ -216,7 +216,13 @@ module Oceanography
       # atm. we simply scan for four digits to extract the starting year
 
       # Look in attribute "units", but fallback to "time" if not set
-      units_string = (timevar.att("units") || timevar.att("time")).get
+      if timevar.att("units")
+        units_string = timevar.att("units").get
+      elsif timevar.att("time")
+        units_string = timevar.att("time").get
+      else
+        units_string = "days since 1.1.1940"
+      end
       year = year_from_units_string(units_string)
 
       timevar.get.to_a.map do |t|

@@ -1,18 +1,33 @@
 module Oceanography
   class DocSplitter
 
+    attr_reader :log
+
+    def initialize(config)
+      @log = config[:log]
+    end
+
     # Takes a NetCDF hash and splits it into one doc per measurement
-    def to_docs(nc_hash)
+    def to_docs(nc_hash, process)
         docs = []
-        nr_of_points = nc_hash["variables"].reduce(0) {|m, v| [m, v["total"]].max}
+        nr_of_points = nc_hash["data"].reduce(0) {|m, (k,v)|
+          s = v.kind_of?(Array) ? v.flatten.size : 0
+          [m, s].max
+        }
+
+        attributes = attributes(nc_hash)
+        units = units(nc_hash)
 
         nr_of_points.times do |i|
-          doc = {}
-          doc.merge!(attributes(nc_hash))
+          t = Time.now
+
+          doc = attributes
           doc.merge!(data(nc_hash, nr_of_points, i))
-          doc.merge!({ "units" => units(nc_hash)})
+          doc.merge!({ "units" => units})
 
           doc["source"] = nc_hash["metadata"]["filename"]
+          doc = process.call(doc)
+          log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")
 
           docs.push(doc)
         end
@@ -28,7 +43,16 @@ module Oceanography
         doc_key = key
         # Avoid collition with time variable
         doc_key = "measured" if key =~ /^(time|date)$/ui
-        attrs[doc_key] = value
+        doc_value = value
+        if (doc_value.kind_of?(Array))
+          if doc_value.first.kind_of?(Array)
+            doc_value = doc_value.flatten()
+          end
+          if (doc_value.size == 1)
+            doc_value = doc_value.first
+          end
+        end
+        attrs[doc_key] = doc_value
       end
       attrs
     end
@@ -37,11 +61,14 @@ module Oceanography
       data = {}
       nc_hash["data"].each do |key, value|
         doc_value = value
-        if (doc_value.respond_to?(:flatten))
-          doc_value = doc_value.flatten()
+
+        if (doc_value.kind_of?(Array))
+          if doc_value.first.kind_of?(Array)
+            doc_value = doc_value.flatten()
+          end
           if (doc_value.size == 1)
             doc_value = doc_value.first
-          elsif (doc_value.size == nr_of_points)
+          elsif (doc_value.size >= nr_of_points)
             doc_value = doc_value[index]
           end
         end

@@ -4,23 +4,18 @@ module Oceanography
     # Accepts a flat hash removing 'missing_values' property and nulling
     # matching values
     def map(doc)
-      missing_value = doc["missing_value"]
-      if missing_value
-        doc.each_with_object({}) do |(key,value), hash|
-          if key != "missing_value"
-            hash[key] = remove_missing_values(missing_value, value)
-          end
+      doc.each_with_object({}) do |(key,value), hash|
+        if key != "missing_value"
+          hash[key] = remove_missing_values(doc["missing_value"], value)
         end
-      else
-        doc
       end
     end
 
     # Recursive removal of "missing_value"
     def remove_missing_values(missing_value, value)
-      if value == missing_value
+      if [99.999, -999, -9999, 9.969209968386869e+36].include?(value) || value == missing_value
         nil
-      elsif value.respond_to?(:map)
+      elsif value.kind_of?(Array)
         value.map { |v| remove_missing_values(missing_value, v) }
       else
         value

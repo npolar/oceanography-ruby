@@ -7,7 +7,7 @@ end
 
 begin
   options = {}
-  banner = "Usage: ./ncdocs.sh [options] FILE_PATTERN"
+  banner = "Usage: ./ncdocs.sh [options] FILE|PATH"
   optparse = OptionParser.new do |opts|
     opts.banner = banner
 
@@ -35,10 +35,11 @@ begin
     exit
   end
 
-  options["file_pattern"] = ARGV[0]
+  options["file_path"] = ARGV
 
   nc_to_docs = Oceanography::NcToDocs.new(options)
   nc_to_docs.parse_files()
+
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   puts $!.to_s
   puts optparse
