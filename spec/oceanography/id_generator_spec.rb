@@ -3,24 +3,19 @@ require "oceanography/id_generator"
 
 describe Oceanography::IdGenerator do
 
-  it "should generate same id give the same input" do
-    id_generator = Oceanography::IdGenerator.new("")
+  it "should generate sequentail ids" do
+    id_generator = Oceanography::IdGenerator.new()
     id1 = id_generator.generateId()
-
-    # Reset sequencing
-    id_generator = Oceanography::IdGenerator.new("")
     id2 = id_generator.generateId()
-    expect(id1).to eq(id2)
+    expect(id1).not_to eq(id2)
+    #only last bit should differ
+    expect(id1[0..-2]).to eq(id2[0..-2])
   end
 
-  it "should generate sequentail ids" do
-    id_generator = Oceanography::IdGenerator.new("")
-    id1 = id_generator.generateId()
+  it "should do base conversion" do
+    id_generator = Oceanography::IdGenerator.new()
 
-    # Reset sequencing
-    id_generator = Oceanography::IdGenerator.new("")
-    id2 = id_generator.generateId()
-    expect(id1).to eq(id2)
+    expect(id_generator.base10toBase64(127)).to eq("AAAB_")
   end
 
 end
