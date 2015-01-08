@@ -9,6 +9,7 @@ require_relative "./doc_splitter"
 require_relative "./doc_filewriter"
 require_relative "./docs_db_publisher"
 require_relative "./filter/key_filter"
+require_relative "./id_generator"
 require "require_all"
 require_rel "mapping"
 require_rel "validation"
@@ -19,7 +20,7 @@ module Oceanography
 
     attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
                 :schema_validator, :sanity_validator, :docs_db_publisher,
-                :doc_splitter, :key_filter
+                :doc_splitter, :key_filter, :id_generator
 
 
     def initialize(config = {})
@@ -41,6 +42,7 @@ module Oceanography
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
       @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
+      @id_generator = IdGenerator.new
     end
 
     def parse_files()
@@ -75,10 +77,11 @@ module Oceanography
         end
         doc = key_filter.filter(doc)
         # Generate a namespaced uuid based on the json string and use that as the ID
-        doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
+        #doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
+        doc["_id"] = id_generator.generateId()
         log.debug(doc)
         if !schema_validator.valid?(doc)
-          throw "#{doc["id"]} not valid!"
+          throw "#{doc["_id"]} not valid!"
         end
         doc
       end

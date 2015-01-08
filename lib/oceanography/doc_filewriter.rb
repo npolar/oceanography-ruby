@@ -16,12 +16,12 @@ module Oceanography
 
     private
     def write_to_file(doc, path)
-      file = File.join(path, doc["id"]+".json")
+      file = File.join(path, doc["_id"]+".json")
       log.debug("Writing #{file}")
       unless File.directory?(path)
         FileUtils.mkdir_p(path)
       end
-      File.open(File.join(path, doc["id"]+".json"), "w") {|f| f.write(JSON.pretty_generate(doc)) }
+      File.open(File.join(path, doc["_id"]+".json"), "w") {|f| f.write(JSON.pretty_generate(doc)) }
     end
 
     def get_file_path(file)

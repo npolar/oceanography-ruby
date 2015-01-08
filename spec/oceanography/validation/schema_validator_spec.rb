@@ -10,6 +10,6 @@ describe Oceanography::SchemaValidator do
   }
 
   it "should validate" do
-    expect(validator.valid?({"id" => 1})).to be false
+    expect(validator.valid?({"_id" => 1})).to be false
   end
 end
