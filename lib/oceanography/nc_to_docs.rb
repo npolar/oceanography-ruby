@@ -3,14 +3,11 @@ require "hashie/mash"
 require "fileutils"
 require "uuidtools"
 require "json"
-require_relative "./log_helper"
-require_relative "./netcdf_reader"
-require_relative "./doc_splitter"
-require_relative "./doc_filewriter"
-require_relative "./docs_db_publisher"
-require_relative "./filter/key_filter"
-require_relative "./id_generator"
 require "require_all"
+require_rel "."
+require_rel "io"
+require_rel "filter"
+require_rel "source"
 require_rel "mapping"
 require_rel "validation"
 
@@ -20,7 +17,7 @@ module Oceanography
 
     attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
                 :schema_validator, :sanity_validator, :docs_db_publisher,
-                :doc_splitter, :key_filter, :id_generator
+                :doc_splitter, :key_filter, :id_generator, :source_tracker
 
 
     def initialize(config = {})
@@ -30,19 +27,20 @@ module Oceanography
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
                   ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
                   ODSClimateForecastMapper]
-      }.merge(config) {|k, default, new| new || default })
+      }).deep_merge(config)
 
       @log = Logger.new(STDERR)
       @log.level = @config.log_level
       @log_helper = LogHelper.new(@config.merge({log: @log}))
       @netcdf_reader = NetCDFReader.new({log: @log})
       @schema_validator = SchemaValidator.new({log: @log, schema: @config.schema})
-      @sanity_validator = SanityValidator.new()
+      @sanity_validator = SanityValidator.new
       @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
       @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
       @id_generator = IdGenerator.new
+      @source_tracker = SourceTracker.new(@config)
     end
 
     def parse_files()
@@ -59,7 +57,7 @@ module Oceanography
           docs = doc_splitter.to_docs(raw_hash, process())
 
           save_docs(docs, file)
-
+          source_tracker.track(docs, file)
           log.info(log_helper.stop_parse(file))
         end
       rescue => e

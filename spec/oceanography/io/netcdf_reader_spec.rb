@@ -1,6 +1,6 @@
 require "spec_helper"
-require "oceanography/netcdf_reader"
-require_relative "../ncml"
+require "oceanography/io/netcdf_reader"
+require_relative "../../ncml"
 
 describe Oceanography::NetCDFReader do
 
