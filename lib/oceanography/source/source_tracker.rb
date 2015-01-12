@@ -8,11 +8,11 @@ module Oceanography
   class SourceTracker
 
     attr_accessor :source
-    attr_reader :config, :uri, :log
+    attr_reader :uri, :log
 
     def initialize(config)
-      if config.api_url
-        @uri = "http://#{URI.join(URI(config[:url]).host, "/source")}"
+      if config.api_url?
+        @uri = URI.join("http://#{URI(config.api_url).host}", "/source")
       end
 
       @log = config.log
@@ -26,19 +26,20 @@ module Oceanography
     end
 
     def track_source(docs, file)
-      source.extend!({
+      source.merge!({
         "file" => file,
         "total" => docs.length,
         "type" => docs[0]["collection"],
         "id" => Digest::SHA1.file(file).hexdigest
         })
 
-        if (uri)
+        if (uri != nil)
           client = Npolar::Api::Client::JsonApiClient.new(uri)
           client.post(JSON.dump(source))
         end
 
         log.info("Track data: #{JSON.dump(source)}")
+        source
     end
   end
 end

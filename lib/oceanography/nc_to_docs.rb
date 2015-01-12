@@ -31,11 +31,12 @@ module Oceanography
 
       @log = Logger.new(STDERR)
       @log.level = @config.log_level
-      @log_helper = LogHelper.new(@config.merge({log: @log}))
+      @config.merge!({log: @log})
+      @log_helper = LogHelper.new(@config)
       @netcdf_reader = NetCDFReader.new({log: @log})
       @schema_validator = SchemaValidator.new({log: @log, schema: @config.schema})
       @sanity_validator = SanityValidator.new
-      @doc_file_writer = DocFileWriter.new(@config.merge({log: @log}))
+      @doc_file_writer = DocFileWriter.new(@config)
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
       @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
@@ -57,7 +58,7 @@ module Oceanography
           docs = doc_splitter.to_docs(raw_hash, process())
 
           save_docs(docs, file)
-          source_tracker.track(docs, file)
+
           log.info(log_helper.stop_parse(file))
         end
       rescue => e
@@ -92,6 +93,7 @@ module Oceanography
 
       if config.api_url?
         docs_db_publisher.post(docs, file)
+        source_tracker.track_source(docs, file)
       end
     end
 
