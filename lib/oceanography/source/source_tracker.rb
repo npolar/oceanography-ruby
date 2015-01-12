@@ -1,5 +1,5 @@
 require "hashie/mash"
-require "oceanography/version"
+require_relative "../version"
 require "json"
 require "uri"
 require "npolar/api/client"
