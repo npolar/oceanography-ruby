@@ -89,8 +89,10 @@ module Oceanography
           }
         end
         log.info("Deleting previously parsed docs from current source")
-        client = api_client("#{api_url}/_bulk_docs")
-        client.post(docs)
+        if !docs.empty?
+          client = api_client("#{api_url}/_bulk_docs")
+          client.post(docs)
+        end
       end
     end
 
