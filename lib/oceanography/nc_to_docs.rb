@@ -41,7 +41,8 @@ module Oceanography
       @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
       @id_generator = IdGenerator.new
-      @source_tracker = SourceTracker.new(@config)
+      @source_tracker = SourceTracker.new(Hashie::Mash.new({
+        log: log, api_url: @config.api_url}))
     end
 
     def parse_files()
@@ -53,10 +54,9 @@ module Oceanography
           current_file = file
           next if bad_data?(file)
           log.info(log_helper.start_parse(file, index, files.size))
-
           raw_hash = open_file(file)
           docs = doc_splitter.to_docs(raw_hash, process())
-
+          source_tracker.track_source(docs, file)
           save_docs(docs, file)
 
           log.info(log_helper.stop_parse(file))
@@ -69,7 +69,7 @@ module Oceanography
     end
 
     def process()
-      lambda do |raw_doc|
+      lambda do |raw_doc, nc_hash|
         doc = raw_doc
         @config.mappers.each do |mapper|
           doc = Oceanography.const_get(mapper.to_s).new.map(doc)
@@ -77,23 +77,28 @@ module Oceanography
         doc = key_filter.filter(doc)
         # Generate a namespaced uuid based on the json string and use that as the ID
         #doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
-        doc["_id"] = id_generator.generateId()
+        doc["id"] = id_generator.generate_id()
+        if track_source?
+          doc["links"] = [{
+            "href" => source_tracker.source_doc_url,
+            "rel" => "source", "title" => nc_hash["metadata"]["filename"]
+            }]
+        end
         log.debug(doc)
         if !schema_validator.valid?(doc)
-          throw "#{doc["_id"]} not valid!"
+          throw "#{doc["id"]} not valid!"
         end
         doc
       end
     end
 
     def save_docs(docs, file)
-      if config.out_path?
+      if write_files?
         doc_file_writer.write(docs, file)
       end
 
-      if config.api_url?
-        docs_db_publisher.post(docs, file)
-        source_tracker.track_source(docs, file)
+      if post_docs?
+        docs_db_publisher.post(docs)
       end
     end
 
@@ -125,5 +130,14 @@ module Oceanography
       end
       files
     end
+
+    def write_files?
+      config.out_path?
+    end
+
+    def post_docs?
+      config.api_url?
+    end
+    alias_method :track_source?, :post_docs?
   end
 end

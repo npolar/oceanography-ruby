@@ -60,7 +60,7 @@ module Oceanography
     SEQUENTIAL_VALUE_SPACE = 16777216
     BASE_64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-    def base10toBase64(number)
+    def base10_to_base64(number)
       num = number
       base64num = ""
       while (true) do
@@ -76,22 +76,22 @@ module Oceanography
     end
 
     def initialize()
-      @random = generateRandom()
+      @random = generate_random()
       @seq = -1
     end
 
-    def generateRandom()
-      @file_id = Digest::SHA1.base64digest(SecureRandom.uuid)
+    def generate_random()
+      @fileid = Digest::SHA1.base64digest(SecureRandom.uuid)
       .gsub("+","-").gsub("/","_").gsub("=","")
       .slice(0, 16)
     end
 
-    def generateId()
+    def generate_id()
       if @seq >= SEQUENTIAL_VALUE_SPACE
         initialize()
       end
       @seq += 1
-      "#{@file_id}#{base10toBase64(@seq)}"
+      "#{@fileid}#{base10_to_base64(@seq)}"
     end
   end
 end

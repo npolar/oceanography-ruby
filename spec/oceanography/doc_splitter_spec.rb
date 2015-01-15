@@ -6,7 +6,7 @@ dump_data = eval File.read("spec/oceanography/_data/dump.rb")
 
 describe "Oceanography::DocSplitter.to_docs" do
   logger = Logger.new(STDERR)
-  dummy_lambda = lambda { |doc| doc }
+  dummy_lambda = lambda { |doc, nc_hash| doc }
 
   before(:all) do
     logger.level = Logger::INFO
@@ -42,12 +42,6 @@ describe "Oceanography::DocSplitter.to_docs" do
     it "should have global attributes" do
       subject.each do |doc|
         expect(doc.keys).to include(*dump_data["attributes"].keys.reject {|k| k == "time"})
-      end
-    end
-
-    it "should add originating file to docs" do
-      subject.each do |doc|
-        expect(doc["source"]).not_to be_nil
       end
     end
 

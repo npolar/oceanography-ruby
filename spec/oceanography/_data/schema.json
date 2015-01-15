@@ -34,7 +34,7 @@
 			"maximum": 10,
 			"description": "Eastward sea water velocity in m/s"
 		},
-		"_id": {
+		"id": {
 			"type": "string",
 			"description": "UUID of this doc"
 		},
@@ -139,7 +139,7 @@
 		"collection",
 		"longitude",
 		"latitude",
-		"_id"
+		"id"
 	],
 	"additionalProperties": true
 }

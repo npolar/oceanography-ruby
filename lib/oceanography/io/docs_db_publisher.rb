@@ -9,7 +9,7 @@ module Oceanography
       @config = config
     end
 
-    def post(docs, original_file)
+    def post(docs)
       client = Npolar::Api::Client::JsonApiClient.new(config[:url])
       client.log = config[:log]
       response = client.post(docs)

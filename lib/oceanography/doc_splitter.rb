@@ -25,8 +25,7 @@ module Oceanography
           doc.merge!(data(nc_hash, nr_of_points, i))
           doc.merge!({ "units" => units})
 
-          doc["source"] = nc_hash["metadata"]["filename"]
-          doc = process.call(doc)
+          doc = process.call(doc, nc_hash)
           log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")
 
           docs.push(doc)

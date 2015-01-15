@@ -2,13 +2,13 @@ module Oceanography
 
   class ODSMooringMapper
 
-    MOORING_ID = "(?<mooring>f\\d{1,2})-?(?<deployment>\\d{1,2})?"
+    MOORINGid = "(?<mooring>f\\d{1,2})-?(?<deployment>\\d{1,2})?"
 
     # Accepts flat Hash of key-value pairs
     def map(doc)
       if doc["collection"] == "mooring"
         # Is it something like Fram-Strait F14-5 ?
-        match = mooring_data(doc).match(/#{MOORING_ID}/ui)
+        match = mooring_data(doc).match(/#{MOORINGid}/ui)
         mooring_data = match_data_to_hash(match)
         if !mooring_data
           mooring_data = name_from_source(doc["source"])

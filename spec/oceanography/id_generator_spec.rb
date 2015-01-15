@@ -5,8 +5,8 @@ describe Oceanography::IdGenerator do
 
   it "should generate sequentail ids" do
     id_generator = Oceanography::IdGenerator.new()
-    id1 = id_generator.generateId()
-    id2 = id_generator.generateId()
+    id1 = id_generator.generate_id()
+    id2 = id_generator.generate_id()
     puts id1
     expect(id1).not_to eq(id2)
     #only last bit should differ
@@ -16,7 +16,7 @@ describe Oceanography::IdGenerator do
   it "should do base conversion" do
     id_generator = Oceanography::IdGenerator.new()
 
-    expect(id_generator.base10toBase64(127)).to eq("AAB_")
+    expect(id_generator.base10_to_base64(127)).to eq("AAB_")
   end
 
 end
