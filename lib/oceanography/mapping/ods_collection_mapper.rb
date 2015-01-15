@@ -11,9 +11,9 @@ module Oceanography
           "cast"
         when doc["instrument_type"] == "ctd"
           "cast"
-        when doc["source"] =~ /\/casts\//ui
+        when doc["links"]["title"] =~ /\/casts\//ui
           "cast"
-        when doc["source"] =~ /\/moorings\//ui
+        when doc["links"]["title"] =~ /\/moorings\//ui
           "mooring"
         else
           "unknown"

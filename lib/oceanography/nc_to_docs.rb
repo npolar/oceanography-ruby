@@ -71,10 +71,6 @@ module Oceanography
     def process()
       lambda do |raw_doc, nc_hash|
         doc = raw_doc
-        @config.mappers.each do |mapper|
-          doc = Oceanography.const_get(mapper.to_s).new.map(doc)
-        end
-        doc = key_filter.filter(doc)
         # Generate a namespaced uuid based on the json string and use that as the ID
         #doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
         doc["id"] = id_generator.generate_id()
@@ -84,6 +80,12 @@ module Oceanography
             "rel" => "source", "title" => nc_hash["metadata"]["filename"]
             }]
         end
+        
+        @config.mappers.each do |mapper|
+          doc = Oceanography.const_get(mapper.to_s).new.map(doc)
+        end
+        doc = key_filter.filter(doc)
+
         log.debug(doc)
         if !schema_validator.valid?(doc)
           throw "#{doc["id"]} not valid!"
