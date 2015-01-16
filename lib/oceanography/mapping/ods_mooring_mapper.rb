@@ -6,20 +6,24 @@ module Oceanography
 
     # Accepts flat Hash of key-value pairs
     def map(doc)
+      if doc["links"]
+        source = doc["links"].find { |link| link["rel"] == "source" }["title"]
+      end
+
       if doc["collection"] == "mooring"
         # Is it something like Fram-Strait F14-5 ?
-        match = mooring_data(doc).match(/#{MOORINGid}/ui)
+        match = mooring_data(doc, source).match(/#{MOORINGid}/ui)
         mooring_data = match_data_to_hash(match)
         if !mooring_data
-          mooring_data = name_from_source(doc["source"])
+          mooring_data = name_from_source(source)
         end
         doc.merge!(mooring_data)
       end
       doc
     end
 
-    def mooring_data(doc)
-      (doc["mooring"] || "") + (doc["comments"] || []).join + doc["source"]
+    def mooring_data(doc, source)
+      "#{doc['mooring']} #{(doc['comments'] || []).join} #{source}"
     end
 
     def name_from_source(source)

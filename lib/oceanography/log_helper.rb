@@ -34,6 +34,7 @@ module Oceanography
 
     def abort(file, e)
       log.warn "Parsing of #{file} aborted due to #{e}"
+      puts e.backtrace
     end
   end
 end

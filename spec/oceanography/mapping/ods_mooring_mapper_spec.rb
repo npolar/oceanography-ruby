@@ -22,11 +22,11 @@ describe Oceanography::ODSMooringMapper do
     end
 
     it "should parse id from source" do
-      expect(mapper.map(doc.merge({"source" => "a/path/f13/nc001.nc"}))["mooring"]).to eq("F13")
+      expect(mapper.map(doc.merge({ "links" => [{"title" => "a/path/f13/nc001.nc", "rel" => "source"}]}))["mooring"]).to eq("F13")
     end
 
     it "should parse name from source" do
-      expect(mapper.map(doc.merge({"source" => "a/path/fny/nc001.nc"}))["mooring"]).to eq("FNY")
+      expect(mapper.map(doc.merge({ "links" => [{"title" => "a/path/fny/nc001.nc", "rel" => "source"}]}))["mooring"]).to eq("FNY")
     end
 
     it "should add deployment number from mooring" do
@@ -34,7 +34,7 @@ describe Oceanography::ODSMooringMapper do
     end
 
     it "should add deployment number from source" do
-      expect(mapper.map(doc.merge({"source" => "a/path/f10-1/nc001.nc"}))["deployment"]).to eq(1)
+      expect(mapper.map(doc.merge({ "links" => [{"title" => "a/path/f10-1/nc001.nc", "rel" => "source"}]}))["deployment"]).to eq(1)
     end
 
     it "should add deployment number from string" do
