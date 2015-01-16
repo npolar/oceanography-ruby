@@ -29,7 +29,6 @@ describe Oceanography::NcToDocs do
         mappers: ["KeyValueCorrectionsMapper"]
       })
       expect(nc_to_docs.docs_db_publisher).to receive(:post)
-      expect(nc_to_docs.source_tracker).to receive(:track_source)
       nc_to_docs.parse_files()
     end
   end

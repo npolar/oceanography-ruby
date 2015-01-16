@@ -18,16 +18,17 @@ module Oceanography
         "glob" => config.file_path,
         "schema" => config.schema,
         "mappers" => config.mappers,
+        "id" => Digest::SHA1.file(config.file).hexdigest,
+        "file" => File.realpath(config.file)
         })
 
       @source_api_url = build_source_api_url(config.api_url)
       @api_url = config.api_url
+      @source_doc_url = "#{source_api_url}/#{source.id}"
     end
 
-    def track_source(docs, file)
+    def track_source(docs)
       source.merge!({
-        "id" => Digest::SHA1.file(file).hexdigest,
-        "file" => File.realpath(file),
         "size" => docs.length,
         "type" => docs.map {|doc| doc["collection"]}.uniq,
         "cruise" => docs.map {|doc| doc["cruise"]}.uniq,
@@ -37,7 +38,6 @@ module Oceanography
         "original_station" => docs.map {|doc| doc["original_station"]}.uniq
         })
 
-      @source_doc_url = "#{source_api_url}/#{source.id}"
       if source_api_url
         begin
           log.info("Tracking source to #{source_api_url}")

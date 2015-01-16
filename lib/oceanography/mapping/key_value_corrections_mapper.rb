@@ -16,7 +16,7 @@ module Oceanography
         elsif (k =~ /^((original_?)?station)$/ui)
           value = v.to_s
         elsif k =~ /^cruise$/ui
-          match = v.match(/^fs(?<cruise>\d{4})$/ui)
+          match = v.match(/^fs(?<cruise>\d{4}(?:-\d)?)$/ui)
           value = match ? "FramStrait_" + match[:cruise] : v
         end
         key = correct_key(key)

@@ -26,18 +26,10 @@ module Oceanography
 
     include NumRu
 
-    # [Hash|Hashie::Mash] config
-    attr_accessor :config
-
     # [NumRu::NetCDF] nc http://www.gfd-dennou.org/arch/ruby/products/ruby-netcdf/Ref_man.html#label:9
     attr_reader :nc
 
-    # [Logger] log
     attr_accessor :config, :log
-
-    # [Proc] mapper lambda that receives a key-value Hash of attributes or data (variable hash) for remapping
-    # See #attributes and #variables
-    attr_accessor :mapper
 
     def initialize(config = CONFIG)
       @config = Hashie::Mash.new(config)
@@ -64,7 +56,7 @@ module Oceanography
       end
       self
     end
-    alias :open :nc=
+    alias_method :open, :nc=
 
     # Get value of named attribute
     # @return [Array|String]

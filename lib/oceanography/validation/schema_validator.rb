@@ -13,11 +13,10 @@ module Oceanography
       @schema = options.schema || {}
     end
 
-    ## Raises exception if not valid
-    def valid?(data)
+    def validate(data)
       errors = JSON::Validator.fully_validate(schema, data)
       errors.each { |e| log.error("Validating #{data['id']} " + e) }
-      errors.empty?
+      errors
     end
   end
 end

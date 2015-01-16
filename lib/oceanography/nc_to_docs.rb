@@ -41,31 +41,34 @@ module Oceanography
       @doc_splitter = DocSplitter.new({log: @log})
       @key_filter = KeyFilter.new
       @id_generator = IdGenerator.new
-      @source_tracker = SourceTracker.new(Hashie::Mash.new({
-        log: log, api_url: @config.api_url}))
     end
 
     def parse_files()
-      log.info(log_helper.start_scan())
+      log_helper.start_scan()
       files = get_files()
       current_file = nil
-      begin
+      rejected = []
         files.each_with_index do |file, index|
-          current_file = file
-          next if bad_data?(file)
-          log.info(log_helper.start_parse(file, index, files.size))
-          raw_hash = open_file(file)
-          docs = doc_splitter.to_docs(raw_hash, process())
-          source_tracker.track_source(docs, file)
-          save_docs(docs, file)
+          begin
+            current_file = file
+            next if bad_data?(file)
+            log_helper.start_parse(file, index, files.size)
+            raw_hash = open_file(file)
+            @source_tracker = SourceTracker.new(Hashie::Mash.new({
+              log: log, api_url: config.api_url, file: file}))
 
-          log.info(log_helper.stop_parse(file))
+            docs = doc_splitter.to_docs(raw_hash, process())
+
+            source_tracker.track_source(docs)
+            save_docs(docs, file)
+
+            log_helper.stop_parse(file)
+          rescue => e
+            rejected.push({file: current_file, error: e})
+            log_helper.abort(current_file, e)
+          end
         end
-      rescue => e
-        log.error(log_helper.abort(current_file))
-        raise e
-      end
-      log.info(log_helper.stop_scan(files))
+      log_helper.stop_scan(files, rejected)
     end
 
     def process()
@@ -74,21 +77,20 @@ module Oceanography
         # Generate a namespaced uuid based on the json string and use that as the ID
         #doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
         doc["id"] = id_generator.generate_id()
-        if track_source?
-          doc["links"] = [{
-            "href" => source_tracker.source_doc_url,
-            "rel" => "source", "title" => nc_hash["metadata"]["filename"]
-            }]
-        end
-        
+        doc["links"] = [{
+          "href" => @source_tracker.source_doc_url,
+          "rel" => "source", "title" => nc_hash["metadata"]["filename"]
+        }]
+
         @config.mappers.each do |mapper|
           doc = Oceanography.const_get(mapper.to_s).new.map(doc)
         end
         doc = key_filter.filter(doc)
 
         log.debug(doc)
-        if !schema_validator.valid?(doc)
-          throw "#{doc["id"]} not valid!"
+        errors = schema_validator.validate(doc)
+        if !errors.empty?
+          throw "#{doc["id"]} not valid! Errors: #{errors.to_json}"
         end
         doc
       end
