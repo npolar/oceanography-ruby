@@ -16,7 +16,7 @@ module Oceanography
         when doc["links"]["title"] =~ /\/moorings\//ui
           "mooring"
         else
-          "unknown"
+          nil
         end
       doc.merge({
         "collection" => collection

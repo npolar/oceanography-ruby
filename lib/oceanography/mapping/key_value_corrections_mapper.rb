@@ -36,7 +36,7 @@ module Oceanography
     def value_mapper(key, value)
       if (value.respond_to?(:nan?) && value.nan?) || value == "unknown"
         nil
-      elsif value.kind_of?(Array) && value.size == 1
+      elsif value.kind_of?(Array) && value.size == 1 && !["links", "comments"].include?(key)
         value_mapper(key, value.flatten.first)
       elsif value.kind_of?(Float)
         value.round(5)

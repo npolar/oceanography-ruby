@@ -2,7 +2,7 @@
 Dir.chdir(__dir__) do
   require "bundler/setup"
   require "optparse"
-  require_relative "../lib/oceanography/nc_to_docs"
+  require_relative "../lib/oceanography/concurrent_file_handler"
 end
 
 begin
@@ -15,9 +15,10 @@ begin
                                      CommentsMapper,CollectionMapper,ClimateForecastMapper") { |v|
         options[:mappers] = v.split(',')
       }
-    opts.on('-o', '--outpath PATH', 'Path to write json docs to.') { |v| options[:out_path] = v }
-    opts.on('-p', '--post URL', 'URL to post json docs to.') { |v| options[:api_url] = v }
+    opts.on('-o', '--outpath PATH', 'Path to write json docs to') { |v| options[:out_path] = v }
+    opts.on('-p', '--post URL', 'URL to post json docs to') { |v| options[:api_url] = v }
     opts.on('-s', '--schema PATH', 'Path to json schema to validate docs against') { |v| options[:schema] = v }
+    opts.on('-t', '--threads #', 'Number of threads. Default 4') { |v| options[:nr_of_threads] = v.to_i }
     opts.on('-v', '--verbose', 'Log level debug. Default info') { |v| options[:log_level] = Logger::DEBUG }
     opts.on('-h', '--help', 'Display this screen') do
       puts opts
@@ -35,10 +36,12 @@ begin
     exit
   end
 
+  puts options.to_json
+
   options["file_path"] = ARGV
 
-  nc_to_docs = Oceanography::NcToDocs.new(options)
-  nc_to_docs.parse_files()
+  file_handler = Oceanography::ConcurrentFileHandler.new(options)
+  file_handler.parse_files()
 
 rescue OptionParser::InvalidOption, OptionParser::MissingArgument
   puts $!.to_s

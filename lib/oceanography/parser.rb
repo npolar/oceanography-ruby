@@ -13,7 +13,7 @@ require_rel "validation"
 
 module Oceanography
 
-  class NcToDocs
+  class Parser
 
     attr_reader :netcdf_reader, :log, :log_helper, :config, :doc_file_writer,
                 :schema_validator, :sanity_validator, :docs_db_publisher,
@@ -22,16 +22,12 @@ module Oceanography
 
     def initialize(config = {})
       @config = Hashie::Mash.new({
-        log_level: Logger::INFO,
-        file_path: ".",
         mappers: [MissingValuesMapper, KeyValueCorrectionsMapper, CommentsMapper,
                   ODSInstrumentTypeMapper, ODSCollectionMapper, ODSMooringMapper,
                   ODSClimateForecastMapper]
       }).deep_merge(config)
 
-      @log = Logger.new(STDERR)
-      @log.level = @config.log_level
-      @config.merge!({log: @log})
+      @log = @config.log
       @log_helper = LogHelper.new(@config)
       @netcdf_reader = NetCDFReader.new({log: @log})
       @schema_validator = SchemaValidator.new({log: @log, schema: @config.schema})
@@ -43,32 +39,29 @@ module Oceanography
       @id_generator = IdGenerator.new
     end
 
-    def parse_files()
-      log_helper.start_scan()
-      files = get_files()
-      current_file = nil
+    def parse_files(files)
       rejected = []
-        files.each_with_index do |file, index|
-          begin
-            current_file = file
-            next if bad_data?(file)
-            log_helper.start_parse(file, index, files.size)
-            raw_hash = open_file(file)
-            @source_tracker = SourceTracker.new(Hashie::Mash.new({
-              log: log, api_url: config.api_url, file: file}))
+      files.each_with_index do |file, index|
+        begin
+          current_file = file
+          next if bad_data?(file)
+          log_helper.start_parse(file, index, files.size)
+          raw_hash = open_file(file)
+          @source_tracker = SourceTracker.new(Hashie::Mash.new({
+            log: log, api_url: config.api_url, file: file}))
 
-            docs = doc_splitter.to_docs(raw_hash, process())
+          docs = doc_splitter.to_docs(raw_hash, process())
 
-            source_tracker.track_source(docs)
-            save_docs(docs, file)
+          source_tracker.track_source(docs)
+          save_docs(docs, file)
 
-            log_helper.stop_parse(file)
-          rescue => e
-            rejected.push({file: current_file, error: e})
-            log_helper.abort(current_file, e)
-          end
+          log_helper.stop_parse(file)
+        rescue => e
+          rejected.push({file: current_file, error: e})
+          log_helper.abort(current_file, e)
         end
-      log_helper.stop_scan(files, rejected)
+      end
+      rejected
     end
 
     def process()
@@ -119,22 +112,6 @@ module Oceanography
       end
     end
 
-    def get_files()
-      files = []
-      fp = config.file_path
-      if !fp.kind_of?(Array)
-        fp = [fp]
-      end
-      fp.each do |f|
-        if Dir.exist?(f)
-          files += Dir["#{f}#{File::SEPARATOR}**#{File::SEPARATOR}*.nc"]
-        elsif File.exist?(f)
-          files.push(f)
-        end
-      end
-      files
-    end
-
     def write_files?
       config.out_path?
     end
@@ -142,6 +119,6 @@ module Oceanography
     def post_docs?
       config.api_url?
     end
-    alias_method :track_source?, :post_docs?
+
   end
 end
