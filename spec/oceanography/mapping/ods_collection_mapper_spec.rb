@@ -18,11 +18,11 @@ describe Oceanography::ODSCollectionMapper do
     end
 
     it "should add collection => 'cast' for docs with '/casts/' in source" do
-      expect(mapper.map({"source" => "a/path/casts/nc001.nc"})["collection"]).to eq("cast")
+      expect(mapper.map({"links" => { "title" => "a/path/casts/nc001.nc"}})["collection"]).to eq("cast")
     end
 
     it "should add collection => 'mooring' for docs with '/moorings/' in source" do
-      expect(mapper.map({"source" => "a/path/moorings/nc001.nc"})["collection"]).to eq("mooring")
+      expect(mapper.map({"links" => { "title" => "a/path/moorings/nc001.nc"}})["collection"]).to eq("mooring")
     end
   end
 end
