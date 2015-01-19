@@ -20,13 +20,26 @@ module Oceanography
     def validate_response(response)
       success = false
       if response.is_a? Array
-        success = response.all? {|r| success?(r) }
+        errors = response.select {|r| !success?(r) }
+        success = errors.empty?
       else
         success = success?(response)
+        if !success
+          errors = [response]
+        end
       end
 
       if !success
-        raise "Failed to post to api"
+        #response_body, #response_code, #effective_url
+        errors.uniq! { |e| e.code }
+        errors = errors.map { |e|
+          {
+            code: e.response_code,
+            body: e.response_body,
+            url: e.effective_url
+          }
+        }
+        raise "Failed to post to api. #{errors.to_json}"
       end
     end
 

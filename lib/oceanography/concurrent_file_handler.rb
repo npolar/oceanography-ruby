@@ -40,8 +40,9 @@ module Oceanography
         threads.push(thread)
       end
       threads.each { |thread| all_rejected += thread.value }
-      File.open(File.join(Dir.pwd, "ncdocs_rejected.json"), "w") {|f| f.write(JSON.pretty_generate(all_rejected)) }
-      log_helper.stop_scan(all_files, all_rejected)
+      filename = "ncdocs_rejected_#{Time.now.strftime("%Y%m%dT%H%M%S")}.json"
+      File.open(File.join(Dir.pwd, filename), "w") {|f| f.write(JSON.pretty_generate(all_rejected)) }
+      log_helper.stop_scan(all_files, all_rejected, filename)
     end
 
     def get_files()

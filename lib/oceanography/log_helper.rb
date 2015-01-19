@@ -17,9 +17,11 @@ module Oceanography
       log.info message
     end
 
-    def stop_scan(files, rejected)
+    def stop_scan(files, rejected, filename)
       time = (Time.now - timing[:main])
-      log.info "Parsing of #{files.size || 0} files done in #{time}s. #{rejected.length} rejections writted to \"ncdocs_rejected.json\"!"
+      message = "Parsing of #{files.size || 0} files done in #{time}s. #{rejected.length} rejections"
+      message << " writted to #{filename}!" if rejected.length > 0
+      log.info message
     end
 
     def start_parse(file, index, total)

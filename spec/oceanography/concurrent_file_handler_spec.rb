@@ -6,6 +6,10 @@ require "fileutils"
 describe Oceanography::ConcurrentFileHandler do
   NR_OF_THREADS = 4
 
+  after(:all) do
+    FileUtils.rm_rf Dir.glob("#{Dir.pwd}/ncdocs_rejected*.json")
+  end
+
   it "should multithread" do
     allow_any_instance_of(Oceanography::Parser).to receive(:parse_files).and_return([])
     file_handler = Oceanography::ConcurrentFileHandler.new({
@@ -14,7 +18,6 @@ describe Oceanography::ConcurrentFileHandler do
     })
 
     file_handler.parse_files()
-    FileUtils.rm_rf(File.join(Dir.pwd, "ncdocs_rejected.json"))
   end
 
   it "should divide files" do

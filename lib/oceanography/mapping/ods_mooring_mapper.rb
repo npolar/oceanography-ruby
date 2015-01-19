@@ -2,7 +2,8 @@ module Oceanography
 
   class ODSMooringMapper
 
-    MOORINGid = "(?<mooring>f\\d{1,2})-?(?<deployment>\\d{1,2})?"
+    MOORING_DATA = /(?<mooring_data>f\d{1,2}-\d{1,2})/ui
+    MOORING_DATA_FALLBACK = /(?<mooring_data>f\d{1,2})/ui
 
     # Accepts flat Hash of key-value pairs
     def map(doc)
@@ -12,8 +13,13 @@ module Oceanography
 
       if doc["collection"] == "mooring"
         # Is it something like Fram-Strait F14-5 ?
-        match = mooring_data(doc, source).match(/#{MOORINGid}/ui)
+        data = mooring_data(doc, source)
+        match = data.match(MOORING_DATA)
         mooring_data = match_data_to_hash(match)
+        if !mooring_data
+          match = data.match(MOORING_DATA_FALLBACK)
+          mooring_data = match_data_to_hash(match)
+        end
         if !mooring_data
           mooring_data = name_from_source(source)
         end
@@ -27,15 +33,19 @@ module Oceanography
     end
 
     def name_from_source(source)
-      match = source.match(/#{File::SEPARATOR}(?<mooring>FNY)#{File::SEPARATOR}/ui)
+      match = source.match(/#{File::SEPARATOR}(?<mooring_data>FNY)#{File::SEPARATOR}/ui)
       match_data_to_hash(match)
     end
 
     def match_data_to_hash(match)
-      return nil if match.nil?
-      hash = {}
-      hash["mooring"] = match[:mooring].upcase if match.names.include?("mooring")
-      hash["deployment"] = match[:deployment].to_i if match.names.include?("deployment")
+      return nil if match.nil? || match[:mooring_data].nil?
+      mooring_data = match[:mooring_data].upcase.split("-")
+      hash = {
+        "mooring" => mooring_data[0],
+      }
+      if mooring_data[1]
+        hash["deployment"] = mooring_data[1].to_i
+      end
       hash
     end
   end

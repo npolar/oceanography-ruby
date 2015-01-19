@@ -17,7 +17,7 @@ module Oceanography
           value = v.to_s
         elsif k =~ /^cruise$/ui
           match = v.match(/^fs(?<cruise>\d{4}(?:-\d)?)$/ui)
-          value = match ? "FramStrait_" + match[:cruise] : v
+          value = match ? "Framstrait-" + match[:cruise] : v
         end
         key = correct_key(key)
         hash[key] = value_mapper(key,value)
