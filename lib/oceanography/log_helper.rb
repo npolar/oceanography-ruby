@@ -19,7 +19,7 @@ module Oceanography
 
     def stop_scan(files, rejected)
       time = (Time.now - timing[:main])
-      log.info "Parsing of #{files.size || 0} files done in #{time}s. Rejections: #{rejected.to_json}"
+      log.info "Parsing of #{files.size || 0} files done in #{time}s. Rejections: #{rejected}"
     end
 
     def start_parse(file, index, total)

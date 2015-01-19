@@ -15,7 +15,7 @@ module Oceanography
 
     def validate(data)
       errors = JSON::Validator.fully_validate(schema, data)
-      errors.each { |e| log.error("Validating #{data['id']} " + e) }
+      errors.each { |e| log.error("Validating #{data['id']} #{e}")}
       errors
     end
   end

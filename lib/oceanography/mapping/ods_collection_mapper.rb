@@ -4,7 +4,7 @@ module Oceanography
 
     # Accepts flat Hash of key-value pairs adding collection property
     def map(doc)
-      source_link = doc["links"].find { |link| link["rel"] == "source" }
+      source_link = (doc["links"]||[]).find { |link| link["rel"] == "source" }
       collection = case
         when doc.has_key?("mooring")
           "mooring"
