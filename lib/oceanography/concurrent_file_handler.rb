@@ -23,6 +23,7 @@ module Oceanography
       }
       @config.merge!({log: @log})
       @log_helper = LogHelper.new(@config)
+      Thread.current[:id] = 0
     end
 
     def parse_files()
@@ -35,7 +36,7 @@ module Oceanography
           parser = Parser.new(@config)
           parser.parse_files(files)
         end
-        thread[:id] = index
+        thread[:id] = index+1
         threads.push(thread)
       end
       threads.each { |thread| all_rejected += thread.value }

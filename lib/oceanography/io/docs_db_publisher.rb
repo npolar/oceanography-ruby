@@ -26,7 +26,7 @@ module Oceanography
       end
 
       if !success
-        throw "Failed to post to api"
+        raise "Failed to post to api"
       end
     end
 

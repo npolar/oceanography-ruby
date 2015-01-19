@@ -34,26 +34,42 @@ module Oceanography
 
     # Recursive value mapping
     def value_mapper(key, value)
-      if (value.respond_to?(:nan?) && value.nan?) || value == "unknown"
+      if nil_value?(value)
         nil
-      elsif value.kind_of?(Array) && value.size == 1 && !["links", "comments"].include?(key)
+      elsif flatten_array?(key, value)
         value_mapper(key, value.flatten.first)
       elsif value.kind_of?(Float)
         value.round(5)
       elsif value.kind_of?(DateTime)
         value.to_time.utc.iso8601
-      elsif key =~ /^(measured|start_date|stop_date)$/ui && value.is_a?(Array)
-        # Possible formats: [2001, 01, 13, 23, 59, 59], [2001, 01, 13], [01, 13, 2001]
-        if (value.first > 60) # year first
-          y,m,d,h,min,s = *value.fill(0, value.size, 6-value.size)
-        else # assume size 3, year last
-          d,m,y,h,min,s = *value.fill(0, value.size, 6-value.size)
-        end
-        y = y == 91 ? 1991 : y
-        value_mapper(key, DateTime.new(y,m,d,h,min,s))
+      elsif date_array?(key, value)
+        map_date_array(key, value)
       else
         value
       end
+    end
+
+    def nil_value?(value)
+      (value.respond_to?(:nan?) && value.nan?) || value == "unknown"
+    end
+
+    def flatten_array?(key, value)
+      value.kind_of?(Array) && value.size == 1 && !["links", "comments"].include?(key)
+    end
+
+    def date_array?(key, value)
+      key =~ /^(measured|start_date|stop_date)$/ui && value.is_a?(Array)
+    end
+
+    def map_date_array(key, value)
+      # Possible formats: [2001, 01, 13, 23, 59, 59], [2001, 01, 13], [01, 13, 2001]
+      # assume size 3, year last
+      d,m,y,h,min,s = *value.fill(0, value.size, 6-value.size)
+      if (value.first > 60) # year first
+        y,d = d,y
+      end
+      y = y == 91 ? 1991 : y
+      value_mapper(key, DateTime.new(y,m,d,h,min,s))
     end
 
     # instrument_type can be String or [nil, "typ", nil]

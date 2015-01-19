@@ -67,13 +67,7 @@ module Oceanography
     def process()
       lambda do |raw_doc, nc_hash|
         doc = raw_doc
-        # Generate a namespaced uuid based on the json string and use that as the ID
-        #doc["id"] = UUIDTools::UUID.md5_create(UUIDTools::UUID_DNS_NAMESPACE, JSON.dump(doc)).to_s
-        doc["id"] = id_generator.generate_id()
-        doc["links"] = [{
-          "href" => @source_tracker.source_doc_url,
-          "rel" => "source", "title" => nc_hash["metadata"]["filename"]
-        }]
+        doc.merge!(source_data(nc_hash))
 
         @config.mappers.each do |mapper|
           doc = Oceanography.const_get(mapper.to_s).new.map(doc)
@@ -87,6 +81,16 @@ module Oceanography
         end
         doc
       end
+    end
+
+    def source_data(nc_hash)
+      {
+        "id" => id_generator.generate_id(),
+        "links" => [{
+          "href" => @source_tracker.source_doc_url,
+          "rel" => "source", "title" => nc_hash["metadata"]["filename"]
+        }]
+      }
     end
 
     def save_docs(docs, file)

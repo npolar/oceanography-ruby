@@ -25,7 +25,8 @@ module Oceanography
     end
 
     def get_file_path(file)
-      File.join(out_path, file[/(.+#{File::SEPARATOR}).+.nc$/ui, 1])
+      puts "Out path: #{out_path}"
+      File.join(out_path, file[/(.+#{File::SEPARATOR}).+\.nc$/ui, 1])
     end
   end
 end

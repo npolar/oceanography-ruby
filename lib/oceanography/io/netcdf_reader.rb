@@ -183,18 +183,22 @@ module Oceanography
       end
 
       #var.get : String or an NArray object (NOTE: even a scalar is returned as an NArray of length 1)
-      v = case type
+      v = unwrap_value(var, type)
+
+      # Some NArray slipps through .. :(
+      v = v.to_a if v.kind_of?(NArray)
+
+      v
+    end
+
+    def unwrap_value(var, type)
+      case type
         when STRING_TYPE_REGEX  then var.get
         when INTEGER_TYPE_REGEX then var.get.to_a.map {|i| i.to_i }
         when FLOAT_TYPE_REGEX then var.get.to_a.map {|f| f.respond_to?(:to_f) ? f.to_f : f[0].to_f }
         when :timevar then float_time_to_datetime(var)
         else var.get.to_a
       end
-
-      # Some NArray slipps through .. :(
-      v = v.to_a if v.kind_of?(NArray)
-
-      v
     end
 
     # Map time array (of numbers relative to a starting point) to array of absolute DateTime objects
@@ -217,6 +221,10 @@ module Oceanography
       end
       year = year_from_units_string(units_string)
 
+      to_datetime(timevar, year)
+    end
+
+    def to_datetime(timevar, year)
       timevar.get.to_a.map do |t|
         return nil if t.nan?
         if t < 0

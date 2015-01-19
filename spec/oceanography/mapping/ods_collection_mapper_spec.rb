@@ -13,8 +13,8 @@ describe Oceanography::ODSCollectionMapper do
       expect(mapper.map({"ctd" => nil})["collection"]).to eq("cast")
     end
 
-    it "should add collection => 'cast' for docs with 'intrument_type' => 'ctd'" do
-      expect(mapper.map({"ctd" => nil})["collection"]).to eq("cast")
+    it "should add collection => 'cast' for docs with 'instrument_type' => 'ctd'" do
+      expect(mapper.map({"instrument_type" => "ctd"})["collection"]).to eq("cast")
     end
 
     it "should add collection => 'cast' for docs with '/casts/' in source" do

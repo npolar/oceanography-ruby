@@ -38,6 +38,15 @@ module Oceanography
         "original_station" => docs.map {|doc| doc["original_station"]}.uniq
         })
 
+      post_source()
+
+      log.info("Track data: #{JSON.dump(source)}")
+      source
+    end
+
+    private
+
+    def post_source()
       if source_api_url
         begin
           log.info("Tracking source to #{source_api_url}")
@@ -49,14 +58,48 @@ module Oceanography
           raise e
         end
       end
-
-      log.info("Track data: #{JSON.dump(source)}")
-      source
     end
 
-    private
-
     def handle_tracked_source()
+      source_already_tracked = get_rev_if_tracked()
+
+      if source_already_tracked
+        client = api_client(api_url)
+        params = query_params()
+        revs = client.get_body(nil, params)
+        log.debug("Revs: #{revs}")
+
+        docs = docs_to_delete(revs)
+        log.info("Deleting previously parsed docs from current source")
+        if !docs.empty?
+          client = api_client("#{api_url}/_bulk_docs")
+          client.post(docs)
+        end
+      end
+    end
+
+    def docs_to_delete(revs)
+      revs.map do |rev|
+        {
+          "_id" => rev["_id"],
+          "_rev" => rev["_rev"],
+          "_deleted" => true
+        }
+      end
+    end
+
+    def query_params()
+      {
+        q: "",
+        "filter-links.href" => source_doc_url,
+        "filter-links.rel" => "source",
+        format: "json",
+        variant: "array",
+        fields: "_id,_rev"
+      }
+    end
+
+    def get_rev_if_tracked()
       source_already_tracked = false
       begin
         client = api_client(source_doc_url)
@@ -68,32 +111,7 @@ module Oceanography
         log.debug(e)
         log.info("Source not previously tracked")
       end
-
-      if source_already_tracked
-        client = api_client(api_url)
-        params = {
-          q: "",
-          "filter-links.href" => source_doc_url,
-          "filter-links.rel" => "source",
-          format: "json",
-          variant: "array",
-          fields: "_id,_rev"
-        }
-        revs = client.get_body(nil, params)
-        log.debug("Revs: #{revs}")
-        docs = revs.map do |rev|
-          {
-            "_id" => rev["_id"],
-            "_rev" => rev["_rev"],
-            "_deleted" => true
-          }
-        end
-        log.info("Deleting previously parsed docs from current source")
-        if !docs.empty?
-          client = api_client("#{api_url}/_bulk_docs")
-          client.post(docs)
-        end
-      end
+      source_already_tracked
     end
 
     def api_client(url)

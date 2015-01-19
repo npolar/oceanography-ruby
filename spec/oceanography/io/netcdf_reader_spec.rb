@@ -4,12 +4,10 @@ require_relative "../../ncml"
 
 describe Oceanography::NetCDFReader do
 
-  #before { skip("No ncdump on travis") }
-
   EPSILON = 1.0e-13 # Required precision for floats
 
   context "Real data" do
-    _data = "#{__dir__}/_data"
+    _data = "#{__dir__}/../_data"
     Dir["#{_data}/**/*.cdl"].sort.each {|f|
 
       context f.gsub(_data, "") do

@@ -9,14 +9,10 @@ module Oceanography
 
     # Takes a NetCDF hash and splits it into one doc per measurement
     def to_docs(nc_hash, process)
-        docs = []
-        nr_of_points = nc_hash["data"].reduce(0) {|m, (k,v)|
-          s = v.kind_of?(Array) ? v.flatten.size : 0
-          [m, s].max
-        }
-
         attributes = attributes(nc_hash)
         units = units(nc_hash)
+        nr_of_points = nr_of_points(nc_hash)
+        docs = []
 
         nr_of_points.times do |i|
           t = Time.now
@@ -30,11 +26,17 @@ module Oceanography
 
           docs.push(doc)
         end
-
         docs
     end
 
     private
+
+    def nr_of_points(nc_hash)
+      nc_hash["data"].reduce(0) {|m, (k,v)|
+        s = v.kind_of?(Array) ? v.flatten.size : 0
+        [m, s].max
+      }
+    end
 
     def attributes(nc_hash)
       attrs = {}
