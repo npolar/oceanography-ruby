@@ -36,8 +36,6 @@ begin
     exit
   end
 
-  puts options.to_json
-
   options["file_path"] = ARGV
 
   file_handler = Oceanography::ConcurrentFileHandler.new(options)

@@ -19,7 +19,7 @@ module Oceanography
 
     def stop_scan(files, rejected)
       time = (Time.now - timing[:main])
-      log.info "Parsing of #{files.size || 0} files done in #{time}s. Rejections: #{rejected}"
+      log.info "Parsing of #{files.size || 0} files done in #{time}s. #{rejected.length} rejections writted to \"ncdocs_rejected.json\"!"
     end
 
     def start_parse(file, index, total)
@@ -34,7 +34,6 @@ module Oceanography
 
     def abort(file, e)
       log.warn "Parsing of #{file} aborted due to #{e}"
-      puts e.backtrace
     end
   end
 end

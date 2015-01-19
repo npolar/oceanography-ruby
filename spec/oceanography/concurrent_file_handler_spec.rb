@@ -1,6 +1,7 @@
 require "spec_helper"
 require "oceanography/parser"
 require "oceanography/concurrent_file_handler"
+require "fileutils"
 
 describe Oceanography::ConcurrentFileHandler do
   NR_OF_THREADS = 4
@@ -13,6 +14,7 @@ describe Oceanography::ConcurrentFileHandler do
     })
 
     file_handler.parse_files()
+    FileUtils.rm_rf(File.join(Dir.pwd, "ncdocs_rejected.json"))
   end
 
   it "should divide files" do

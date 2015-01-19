@@ -57,8 +57,8 @@ module Oceanography
 
           log_helper.stop_parse(file)
         rescue => e
-          rejected.push({file: current_file, error: e})
-          log_helper.abort(current_file, e)
+          rejected.push({file: current_file, error: e.to_s})
+          log_helper.abort(current_file, e.to_s)
         end
       end
       rejected
