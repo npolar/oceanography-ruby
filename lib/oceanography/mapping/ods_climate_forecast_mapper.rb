@@ -48,10 +48,10 @@ module Oceanography
       }
       if value
         if unit =~ /cm\/s/ui
-          converted["value"] = value / 100
+          converted["value"] = (value / 100).round(5)
           converted["unit"] = "m/s"
         elsif unit =~ /mS\/cm/ui
-          converted["value"] = value / 10
+          converted["value"] = (value / 10).round(5)
           converted["unit"] = "S/m"
         end
       end

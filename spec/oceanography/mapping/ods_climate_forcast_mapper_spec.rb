@@ -77,5 +77,9 @@ describe Oceanography::ODSClimateForecastMapper do
       expect(cf_mapper.map({"a" => 100, "units" => {"a" => "cm/s"}})["a"]).to eq(1)
     end
 
+    it "should not produce unit conversions with more that 5 decimal points" do
+      expect(cf_mapper.map({"a" => 10.12345, "units" => {"a" => "cm/s"}})["a"]).to eq(0.10123)
+    end
+
   end
 end
