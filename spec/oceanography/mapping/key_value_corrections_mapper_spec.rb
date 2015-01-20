@@ -58,7 +58,7 @@ describe Oceanography::KeyValueCorrectionsMapper do
     end
 
     it "should correct fs cruise codes to FramStrait..." do
-      expect(mapper.map({"cruise" => "fs2009"})["cruise"]).to eq("FramStrait_2009")
+      expect(mapper.map({"cruise" => "fs2009"})["cruise"]).to eq("Framstrait-2009")
     end
   end
 end
