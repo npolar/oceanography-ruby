@@ -10,7 +10,6 @@ module Oceanography
     # Takes a NetCDF hash and splits it into one doc per measurement
     def to_docs(nc_hash, process)
         attributes = attributes(nc_hash)
-        units = units(nc_hash)
         nr_of_points = nr_of_points(nc_hash)
         docs = []
 
@@ -19,9 +18,9 @@ module Oceanography
 
           doc = attributes
           doc.merge!(data(nc_hash, nr_of_points, i))
-          doc.merge!({ "units" => units})
 
           doc = process.call(doc, nc_hash)
+
           log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")
 
           docs.push(doc)
@@ -42,9 +41,8 @@ module Oceanography
       attrs = {}
       nc_hash["attributes"].each do |key, value|
         doc_key = key
-        # Avoid collition with time variable
-        doc_key = "measured" if key =~ /^(time|date)$/ui
         doc_value = value
+        doc_key = "measured" if key =~ /^(time|date)$/ui
         if (doc_value.kind_of?(Array))
           if doc_value.first.kind_of?(Array)
             doc_value = doc_value.flatten()
@@ -62,7 +60,9 @@ module Oceanography
       data = {}
       nc_hash["data"].each do |key, value|
         doc_value = value
-
+        doc_key = key
+        # Smae key as time/date in attributes, this overwrites
+        doc_key = "measured" if key =~ /^time$/ui
         if (doc_value.kind_of?(Array))
           if doc_value.first.kind_of?(Array)
             doc_value = doc_value.flatten()
@@ -74,16 +74,9 @@ module Oceanography
           end
         end
 
-        data[key] = doc_value
+        data[doc_key] = doc_value
       end
       data
-    end
-
-    def units(nc_hash)
-      nc_hash["variables"].reduce({}) do |memo, var|
-        memo[var["name"]] = var["units"]
-        memo
-      end
     end
   end
 end

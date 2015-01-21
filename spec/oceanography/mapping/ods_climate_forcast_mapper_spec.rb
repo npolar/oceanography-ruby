@@ -69,16 +69,12 @@ describe Oceanography::ODSClimateForecastMapper do
       expect(cf_mapper.map({"instrdepth" => nil})).to have_key("depth")
     end
 
-    it "should update keys in units hash" do
-      expect(cf_mapper.map({"dept" => 10, "units" => {"dept" => "m"}})["units"]).to have_key("depth")
-    end
-
     it "should convert cm/s to m/s" do
-      expect(cf_mapper.map({"a" => 100, "units" => {"a" => "cm/s"}})["a"]).to eq(1)
+      expect(cf_mapper.map({"a" => 100}, {"variables" => [{"name" => "a", "units" => "cm/s"}]})["a"]).to eq(1)
     end
 
     it "should not produce unit conversions with more that 5 decimal points" do
-      expect(cf_mapper.map({"a" => 10.12345, "units" => {"a" => "cm/s"}})["a"]).to eq(0.10123)
+      expect(cf_mapper.map({"a" => 10.12345}, {"variables" => [{"name" => "a", "units" => "cm/s"}]})["a"]).to eq(0.10123)
     end
 
   end

@@ -13,13 +13,10 @@ module Oceanography
     def initialize(config)
       @log = config.log
       @source = Hashie::Mash.new({
-        "collection" => "oceanography",
-        "parser" => "oceanography-ruby-#{VERSION}",
-        "glob" => config.file_path,
-        "schema" => config.schema,
-        "mappers" => config.mappers,
-        "id" => Digest::SHA1.file(config.file).hexdigest,
-        "file" => File.realpath(config.file)
+        collection: "oceanography",
+        parser: "oceanography-ruby-#{VERSION}",
+        id: Digest::SHA1.file(config.file).hexdigest,
+        file: File.realpath(config.file)
         })
 
       @source_api_url = build_source_api_url(config.api_url)
@@ -29,14 +26,14 @@ module Oceanography
 
     def track_source(docs)
       source.merge!({
-        "size" => docs.length,
-        "type" => docs.map {|doc| doc["collection"]}.uniq,
-        "cruise" => docs.map {|doc| doc["cruise"]}.uniq,
-        "measured" => docs.map {|doc| doc["measured"]}.uniq,
-        "mooring" => docs.map {|doc| doc["mooring"]}.uniq,
-        "station" => docs.map {|doc| doc["station"]}.uniq,
-        "original_station" => docs.map {|doc| doc["original_station"]}.uniq
+        size: docs.length,
+        type: docs.first["collection"],
+        cruise: docs.first["cruise"],
+        numerics: variables(docs)
         })
+
+      source.merge!(cast_data(docs))
+      source.merge!(mooring_data(docs))
 
       post_source()
 
@@ -45,6 +42,36 @@ module Oceanography
     end
 
     private
+
+    def cast_data(docs)
+      if docs.first["collection"] == "cast"
+        {
+          station: docs.first["station"],
+          original_station: docs.first["original_station"],
+        }
+      else
+        {}
+      end
+    end
+
+    def mooring_data(docs)
+      if docs.first["collection"] == "mooring"
+        {
+          mooring: docs.first["mooring"],
+          deployment: docs.first["deployment"],
+        }
+      else
+        {}
+      end
+    end
+
+    def variables(docs)
+      docs.first.each_with_object([]) do |(k,v), var|
+        if (v.kind_of?(Numeric))
+          var.push(k)
+        end
+      end
+    end
 
     def post_source()
       if source_api_url
@@ -81,9 +108,9 @@ module Oceanography
     def docs_to_delete(revs)
       revs.map do |rev|
         {
-          "_id" => rev["_id"],
-          "_rev" => rev["_rev"],
-          "_deleted" => true
+          _id: rev["_id"],
+          _rev: rev["_rev"],
+          _deleted: true
         }
       end
     end

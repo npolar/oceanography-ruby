@@ -18,7 +18,12 @@ describe Oceanography::SourceTracker do
   end
 
   it "should sha1 hashe file" do
-    subject.track_source([])
+    subject.track_source([{}])
     expect(subject.source.id).to match(/[a-zA-Z0-9]/)
+  end
+
+  it "should track numeric variables" do
+    subject.track_source([{a: 1.1, b: 0, c: "hej"}])
+    expect(subject.source.numerics).to eq([:a, :b])
   end
 end

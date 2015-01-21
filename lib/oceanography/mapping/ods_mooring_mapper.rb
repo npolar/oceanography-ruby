@@ -6,7 +6,7 @@ module Oceanography
     MOORING_DATA_FALLBACK = /(?<mooring_data>f\d{1,2})/ui
 
     # Accepts flat Hash of key-value pairs
-    def map(doc)
+    def map(doc, nc_hash = {})
       if doc["links"]
         source = doc["links"].find { |link| link["rel"] == "source" }["title"]
       end

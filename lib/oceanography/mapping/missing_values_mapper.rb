@@ -3,7 +3,7 @@ module Oceanography
 
     # Accepts a flat hash removing 'missing_values' property and nulling
     # matching values
-    def map(doc)
+    def map(doc, nc_hash = {})
       doc.each_with_object({}) do |(key,value), hash|
         if key != "missing_value"
           hash[key] = remove_missing_values(doc["missing_value"], value)

@@ -46,11 +46,11 @@ module Oceanography
           current_file = file
           next if bad_data?(file)
           log_helper.start_parse(file, index, files.size)
-          raw_hash = open_file(file)
+          nc_hash = open_file(file).freeze
           @source_tracker = SourceTracker.new(Hashie::Mash.new({
             log: log, api_url: config.api_url, file: file}))
 
-          docs = doc_splitter.to_docs(raw_hash, process())
+          docs = doc_splitter.to_docs(nc_hash, process())
 
           source_tracker.track_source(docs)
           save_docs(docs, file)
@@ -59,25 +59,25 @@ module Oceanography
         rescue => e
           rejected.push({file: current_file, error: e.to_s})
           log_helper.abort(current_file, e.to_s)
+          log.debug(e.backtrace.join("\n"))
         end
       end
       rejected
     end
 
     def process()
-      lambda do |raw_doc, nc_hash|
-        doc = raw_doc
+      lambda do |doc, nc_hash|
         doc.merge!(source_data(nc_hash))
 
         @config.mappers.each do |mapper|
-          doc = Oceanography.const_get(mapper.to_s).new.map(doc)
+          doc = Oceanography.const_get(mapper.to_s).new.map(doc, nc_hash)
         end
         doc = key_filter.filter(doc)
 
         log.debug(doc)
         errors = schema_validator.validate(doc)
         if !errors.empty?
-          throw "#{doc["id"]} not valid! Errors: #{errors.to_json}"
+          raise "#{doc["id"]} not valid! Errors: #{errors.to_json}"
         end
         doc
       end
@@ -88,7 +88,8 @@ module Oceanography
         "id" => id_generator.generate_id(),
         "links" => [{
           "href" => @source_tracker.source_doc_url,
-          "rel" => "source", "title" => nc_hash["metadata"]["filename"]
+          "rel" => "source",
+          "title" => nc_hash["metadata"]["filename"]
         }]
       }
     end

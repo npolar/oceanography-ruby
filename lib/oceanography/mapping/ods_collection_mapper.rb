@@ -3,7 +3,7 @@ module Oceanography
   class ODSCollectionMapper
 
     # Accepts flat Hash of key-value pairs adding collection property
-    def map(doc)
+    def map(doc, nc_hash = {})
       source_link = (doc["links"]||[]).find { |link| link["rel"] == "source" }
       collection = case
         when doc.has_key?("mooring")

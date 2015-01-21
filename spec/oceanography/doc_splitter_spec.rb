@@ -51,10 +51,5 @@ describe "Oceanography::DocSplitter.to_docs" do
       end
     end
 
-    it "should add units hash" do
-      subject.each do |doc|
-        expect(doc["units"]).to be_kind_of(Hash)
-      end
-    end
   end
 end

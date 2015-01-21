@@ -4,10 +4,10 @@ module Oceanography
 
     # Climate and forecast conventions variable and attribute mappper for common synonyms
     # @see http://cfconventions.org/Data/cf-standard-names/27/build/cf-standard-name-table.html
-    def map(hash)
+    def map(doc, nc_hash = {})
       mapped = {}
-      units = hash["units"]
-      hash.each do |k,v|
+      units = units(nc_hash)
+      doc.each do |k,v|
         key = case k
           when /^(temperature|temp|t)$/ui
             "sea_water_temperature"
@@ -33,12 +33,11 @@ module Oceanography
         if unit
           converted = convert_units(key, v, unit)
           mapped[key] = converted["value"]
-          units[key] = converted["unit"]
         else
           mapped[key] = v
         end
       end
-      mapped.merge({"units" => units})
+      mapped
     end
 
     def convert_units(key, value, unit)
@@ -56,6 +55,13 @@ module Oceanography
         end
       end
       converted
+    end
+
+    def units(nc_hash)
+      (nc_hash["variables"] || []).reduce({}) do |memo, var|
+        memo[var["name"]] = var["units"]
+        memo
+      end
     end
   end
 end

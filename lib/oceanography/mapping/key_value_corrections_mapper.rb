@@ -3,7 +3,7 @@ module Oceanography
   class KeyValueCorrectionsMapper
 
     # Accepts flat Hash of key-value pairs
-    def map(doc)
+    def map(doc, nc_hash = {})
       doc.each_with_object({}) do |(k,v), hash|
         key = k
         value = v
