@@ -220,7 +220,6 @@ module Oceanography
         units_string = "days since 1.1.1940"
       end
       year = year_from_units_string(units_string)
-
       to_datetime(timevar, year)
     end
 
@@ -232,7 +231,12 @@ module Oceanography
           t = DateTime.civil(year).jd + t
         end
 
-        DateTime.jd( DateTime.civil(year).jd + t)
+        dt = DateTime.jd( DateTime.civil(year).jd + t)
+
+        if dt.year < 100 # Assume missing sentury, assume old data
+          dt = dt >> (12*1900)
+        end
+        dt
       end
     end
 

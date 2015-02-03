@@ -61,7 +61,7 @@ module Oceanography
       nc_hash["data"].each do |key, value|
         doc_value = value
         doc_key = key
-        # Smae key as time/date in attributes, this overwrites
+        # Same key as time/date in attributes, this overwrites
         doc_key = "measured" if key =~ /^time$/ui
         if (doc_value.kind_of?(Array))
           if doc_value.first.kind_of?(Array)

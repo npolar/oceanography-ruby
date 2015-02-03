@@ -19,8 +19,8 @@ module Oceanography
 
     def stop_scan(files, rejected, filename)
       time = (Time.now - timing[:main])
-      message = "Parsing of #{files.size || 0} files done in #{time}s. #{rejected.length} rejections"
-      message << " writted to #{filename}!" if rejected.length > 0
+      message = "Parsing of #{files.size || 0} files done in #{time}s. #{rejected.length} rejections. "
+      message << "Summary written to #{filename}!"
       log.info message
     end
 

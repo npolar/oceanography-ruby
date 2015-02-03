@@ -97,7 +97,7 @@ module Oceanography
         log.debug("Revs: #{revs}")
 
         docs = docs_to_delete(revs)
-        log.info("Deleting previously parsed docs from current source")
+        log.info("Deleting #{docs.size} previously parsed docs from current source")
         if !docs.empty?
           client = api_client("#{api_url}/_bulk_docs")
           client.post(docs)
@@ -122,7 +122,8 @@ module Oceanography
         "filter-links.rel" => "source",
         format: "json",
         variant: "array",
-        fields: "_id,_rev"
+        fields: "_id,_rev",
+        limit: "all"
       }
     end
 
