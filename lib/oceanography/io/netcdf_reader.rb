@@ -193,7 +193,7 @@ module Oceanography
 
     def unwrap_value(var, type)
       case type
-        when STRING_TYPE_REGEX  then var.get
+        when STRING_TYPE_REGEX  then var.get.to_s
         when INTEGER_TYPE_REGEX then var.get.to_a.map {|i| i.to_i }
         when FLOAT_TYPE_REGEX then var.get.to_a.map {|f| f.respond_to?(:to_f) ? f.to_f : f[0].to_f }
         when :timevar then float_time_to_datetime(var)
