@@ -40,7 +40,7 @@ module Oceanography
         threads.push(thread)
       end
       threads.each { |thread| all_rejected += thread.value }
-      filename = "ncdocs_rejected_#{Time.now.strftime("%Y%m%dT%H%M%S")}.json"
+      filename = "ncdocs_summary_#{Time.now.strftime("%Y%m%dT%H%M%S")}.json"
       write_file_summary(filename, all_rejected)
       log_helper.stop_scan(all_files, all_rejected, filename)
     end

@@ -31,7 +31,7 @@ module Oceanography
       @log_helper = LogHelper.new(@config)
       @netcdf_reader = NetCDFReader.new({log: @log})
       @schema_validator = SchemaValidator.new({log: @log, schema: @config.schema})
-      @sanity_validator = SanityValidator.new
+      @sanity_validator = SanityValidator.new({log: @log})
       @doc_file_writer = DocFileWriter.new(@config)
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
       @doc_splitter = DocSplitter.new({log: @log})
@@ -57,8 +57,9 @@ module Oceanography
 
           log_helper.stop_parse(file)
         rescue => e
-          rejected.push({file: current_file, error: e.to_s})
-          log_helper.abort(current_file, e.to_s)
+          errors = e.respond_to?(:errors) ? e.errors : [e.message]
+          rejected.push({file: current_file, errors: errors })
+          log_helper.abort(current_file, e.message)
           log.debug(e.backtrace.join("\n"))
         end
       end
@@ -75,9 +76,10 @@ module Oceanography
         doc = key_filter.filter(doc)
 
         log.debug(doc)
-        errors = schema_validator.validate(doc)
+        errors = validate(doc)
         if !errors.empty?
-          raise "#{doc["id"]} not valid! Errors: #{errors.to_json}"
+          puts "ERRORS: #{errors}"
+          raise ParsingError.new(errors), "Validation failed"
         end
         doc
       end
@@ -92,6 +94,11 @@ module Oceanography
           "title" => nc_hash["metadata"]["filename"]
         }]
       }
+    end
+
+    def validate(doc)
+      schema_validator.validate(doc) +
+      sanity_validator.validate(doc)
     end
 
     def save_docs(docs, file)

@@ -226,14 +226,9 @@ module Oceanography
     def to_datetime(timevar, year)
       timevar.get.to_a.map do |t|
         return nil if t.nan?
-        if t < 0
-          # Negative time since, so we subtract (using +) t from start point to get the number of days elapsed
-          t = DateTime.civil(year).jd + t
-        end
-
         dt = DateTime.jd( DateTime.civil(year).jd + t)
 
-        if dt.year < 100 # Assume missing sentury, assume old data
+        if dt.year < 100 # Assume missing sentury, assume old data (1900)
           dt = dt >> (12*1900)
         end
         dt

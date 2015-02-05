@@ -1,4 +1,5 @@
 require "npolar/api/client"
+require_relative "../parsing_error"
 
 module Oceanography
   class DocsDBPublisher
@@ -33,13 +34,9 @@ module Oceanography
         #response_body, #response_code, #effective_url
         errors.uniq! { |e| e.code }
         errors = errors.map { |e|
-          {
-            code: e.response_code,
-            body: e.response_body,
-            url: e.effective_url
-          }
+          "Could not post to #{e.effective_url} got HTTP #{e.response_code}: #{e.response_body}"
         }
-        raise "Failed to post to api. #{errors.to_json}"
+        raise ParsingError.new(errors), "Could not post to api"
       end
     end
 
