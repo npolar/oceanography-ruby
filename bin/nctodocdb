@@ -17,7 +17,7 @@ begin
       }
     opts.on('-o', '--outpath PATH', 'Path to write json docs to') { |v| options[:out_path] = v }
     opts.on('-p', '--post URL', 'URL to post json docs to') { |v| options[:api_url] = v }
-    opts.on('-s', '--schema PATH', 'Path to json schema to validate docs against') { |v| options[:schema] = v }
+    opts.on('-s', '--schema PATH|URL', 'Path or url to json schema to validate docs against') { |v| options[:schema] = v }
     opts.on('-t', '--threads #', 'Number of threads. Default 4') { |v| options[:nr_of_threads] = v.to_i }
     opts.on('-v', '--verbose', 'Log level debug. Default info') { |v| options[:log_level] = Logger::DEBUG }
     opts.on('-h', '--help', 'Display this screen') do
