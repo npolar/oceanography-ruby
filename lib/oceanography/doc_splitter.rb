@@ -1,3 +1,6 @@
+require "open-uri"
+require "json"
+
 module Oceanography
   class DocSplitter
 
@@ -32,10 +35,7 @@ module Oceanography
     private
 
     def schema_url()
-      return schema if schema =~ /^http/iu
-      schema_location = "http://api.npolar.no/schema/"
-      schema_name = schema.split(File::SEPARATOR)[-1]
-      schema_location + schema_name
+      JSON.load(open(schema))["id"]
     end
 
     def nr_of_points(nc_hash)

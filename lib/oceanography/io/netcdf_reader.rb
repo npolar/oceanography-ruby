@@ -226,6 +226,9 @@ module Oceanography
     def to_datetime(timevar, year)
       timevar.get.to_a.map do |t|
         return nil if t.nan?
+        if (t < -2000000) # Correct unintended negative time.
+          t = DateTime.civil(year).jd + t
+        end
         dt = DateTime.jd( DateTime.civil(year).jd + t)
 
         if dt.year < 100 # Assume missing sentury, assume old data (1900)

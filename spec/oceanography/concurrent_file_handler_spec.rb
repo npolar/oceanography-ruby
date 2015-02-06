@@ -7,7 +7,7 @@ describe Oceanography::ConcurrentFileHandler do
   NR_OF_THREADS = 4
 
   after(:all) do
-    FileUtils.rm_rf Dir.glob("#{Dir.pwd}/ncdocs_rejected*.json")
+    FileUtils.rm_rf Dir.glob("#{Dir.pwd}/ncdocs_*.json")
   end
 
   it "should multithread" do

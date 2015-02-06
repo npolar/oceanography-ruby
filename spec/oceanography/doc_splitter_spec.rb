@@ -57,17 +57,10 @@ describe "Oceanography::DocSplitter.to_docs" do
       end
     end
 
-    it "should have schema" do
-      splitter = Oceanography::DocSplitter.new({log: logger, schema: "http://schema"}).to_docs(dump_data, dummy_lambda)
+    it "should fetch schema id" do
+      splitter = Oceanography::DocSplitter.new({log: logger, schema: "spec/oceanography/_data/schema.json"}).to_docs(dump_data, dummy_lambda)
       splitter.each do |doc|
-        expect(doc["schema"]).to eq("http://schema")
-      end
-    end
-
-    it "should point to schema url if file path is given" do
-      splitter = Oceanography::DocSplitter.new({log: logger, schema: "/home/a/schema.json"}).to_docs(dump_data, dummy_lambda)
-      splitter.each do |doc|
-        expect(doc["schema"]).to eq("http://api.npolar.no/schema/schema.json")
+        expect(doc["schema"]).to eq("http://api.npolar.no/schema/oceanography_point-1.0.0")
       end
     end
 

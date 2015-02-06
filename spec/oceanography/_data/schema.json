@@ -1,7 +1,8 @@
 {
-	"title": "Oceanography measurement point Schema v0.1",
-	"description": "Schema for Oceanography measurement point documents (version 0.1)",
+	"title": "Oceanography measurement point Schema",
+	"description": "Schema for Oceanography measurement point documents",
 	"$schema": "http://json-schema.org/draft-04/schema#",
+	"id": "http://api.npolar.no/schema/oceanography_point-1.0.0",
 	"type": "object",
 	"properties": {
 		"collection": {
@@ -70,7 +71,7 @@
 			"description": "Northward sea water velocity in m/s"
 		},
 		"original_station": {
-			"type": "number",
+			"type": "string",
 			"description": "Station identifier"
 		},
 		"platform": {
@@ -95,7 +96,7 @@
 		},
 		"sea_water_salinity": {
 			"type": [ "number", "null" ],
-			"minimum": 15,
+			"minimum": 0,
 			"maximum": 45,
 			"description": "Salinity in particle salinity units (PSU) PPS-78"
 		},
@@ -109,19 +110,9 @@
 			"type": "string",
 			"description": "Instrument serial number"
 		},
-		"start_date": {
-			"type": "string",
-			"format": "date-time",
-			"description": "Start of measurement"
-		},
 		"station": {
-			"type": "number",
-			"description": "Station identifier"
-		},
-		"stop_date": {
 			"type": "string",
-			"format": "date-time",
-			"description": "Stop of measurement"
+			"description": "Station identifier"
 		},
 		"tilt": {
 			"type": "number",
@@ -129,10 +120,10 @@
 			"maximum": 360,
 			"description": "Instrument tilt in degrees"
 		},
-		"time": {
+		"schema": {
 			"type": "string",
-			"format": "date-time",
-			"description": "Time of measurement"
+			"format": "uri",
+			"description": "Oceanography json schema uri"
 		}
 	},
 	"required": [
@@ -140,7 +131,8 @@
 		"longitude",
 		"latitude",
 		"id",
-		"measured"
+		"measured",
+		"schema"
 	],
 	"additionalProperties": true
 }
