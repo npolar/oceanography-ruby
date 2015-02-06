@@ -151,14 +151,21 @@ module Oceanography
     def build_source_api_url(api_url)
       source_api_url = nil
       if api_url
-        uri = URI(api_url)
+        uri = build_uri(api_url)
         source_api_url = "#{uri.scheme}://#{uri.host}"
-        if (uri.port)
-          source_api_url += ":#{uri.port}"
-        end
+        source_api_url += port(uri)
         source_api_url += "/source"
       end
       source_api_url
+    end
+
+    def port(uri)
+      (uri.port && uri.port != 80) ? ":#{uri.port}" : ""
+    end
+
+    def build_uri(api_url)
+      api_url = api_url.prepend("http://") if !/^http(s)?/.match(api_url)
+      URI(api_url)
     end
   end
 end

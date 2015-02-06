@@ -1,10 +1,11 @@
 module Oceanography
   class DocSplitter
 
-    attr_reader :log
+    attr_reader :log, :schema
 
     def initialize(config)
       @log = config[:log]
+      @schema = config[:schema]
     end
 
     # Takes a NetCDF hash and splits it into one doc per measurement
@@ -18,7 +19,7 @@ module Oceanography
 
           doc = attributes
           doc.merge!(data(nc_hash, nr_of_points, i))
-
+          doc["schema"] = schema if !schema.nil?
           doc = process.call(doc, nc_hash)
 
           log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")

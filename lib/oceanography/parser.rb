@@ -34,7 +34,7 @@ module Oceanography
       @sanity_validator = SanityValidator.new({log: @log})
       @doc_file_writer = DocFileWriter.new(@config)
       @docs_db_publisher = DocsDBPublisher.new({log: @log, url: @config.api_url})
-      @doc_splitter = DocSplitter.new({log: @log})
+      @doc_splitter = DocSplitter.new({log: @log, schema: @config.schema})
       @key_filter = KeyFilter.new
       @id_generator = IdGenerator.new
     end

@@ -26,4 +26,18 @@ describe Oceanography::SourceTracker do
     subject.track_source([{a: 1.1, b: 0, c: "hej"}])
     expect(subject.source.numerics).to eq([:a, :b])
   end
+
+  it "should add port to url" do
+    source_tracker = Oceanography::SourceTracker.new(Hashie::Mash.new({
+      log: logger, api_url: "https://localhost:8888/tjoho",
+      file: File.expand_path(__FILE__)}))
+      expect(source_tracker.source_api_url).to eq("https://localhost:8888/source")
+    end
+
+  it "should not add port 80 to url" do
+    source_tracker = Oceanography::SourceTracker.new(Hashie::Mash.new({
+      log: logger, api_url: "localhost:80/tjoho",
+      file: File.expand_path(__FILE__)}))
+    expect(source_tracker.source_api_url).to eq("http://localhost/source")
+  end
 end
