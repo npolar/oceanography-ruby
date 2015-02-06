@@ -15,6 +15,7 @@ module Oceanography
     def to_docs(nc_hash, process)
         attributes = attributes(nc_hash)
         nr_of_points = nr_of_points(nc_hash)
+        schema_url = schema_url()
         docs = []
 
         nr_of_points.times do |i|
@@ -22,7 +23,7 @@ module Oceanography
 
           doc = attributes
           doc.merge!(data(nc_hash, nr_of_points, i))
-          doc["schema"] = schema_url() if !schema.nil?
+          doc["schema"] = schema_url if !schema.nil?
           doc = process.call(doc, nc_hash)
 
           log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")
@@ -35,7 +36,7 @@ module Oceanography
     private
 
     def schema_url()
-      JSON.load(open(schema))["id"]
+      JSON.load(open(schema))["id"] if !schema.nil?
     end
 
     def nr_of_points(nc_hash)

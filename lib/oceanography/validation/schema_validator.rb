@@ -10,7 +10,7 @@ module Oceanography
     def initialize(options)
       options = Hashie::Mash.new(options)
       @log = options.log
-      @schema = options.schema || {}
+      @schema = options.schema.nil? ? {} : JSON.load(open(options.schema))
     end
 
     def validate(data)
