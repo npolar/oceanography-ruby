@@ -19,7 +19,7 @@ module Oceanography
 
           doc = attributes
           doc.merge!(data(nc_hash, nr_of_points, i))
-          doc["schema"] = schema if !schema.nil?
+          doc["schema"] = schema_url() if !schema.nil?
           doc = process.call(doc, nc_hash)
 
           log.debug("Splitting took #{((Time.now - t)*1000).round(5)}ms for iteration #{i}/#{nr_of_points-1}")
@@ -30,6 +30,13 @@ module Oceanography
     end
 
     private
+
+    def schema_url()
+      return schema if schema =~ /^http/iu
+      schema_location = "http://api.npolar.no/schema/"
+      schema_name = schema.split(File::SEPARATOR)[-1]
+      schema_location + schema_name
+    end
 
     def nr_of_points(nc_hash)
       nc_hash["data"].reduce(0) {|m, (k,v)|
